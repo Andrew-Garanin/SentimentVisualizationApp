@@ -4,7 +4,7 @@ import spacy
 
 class Dictionary:
     def __init__(self):
-        self._map_data = pd.read_csv('data.csv', sep=';')
+        self._map_data = pd.read_csv('sentiment_dictionary.csv', sep=';')
         self.nlp = spacy.load("ru_core_news_md")
 
     def get_word_tag(self, term):
