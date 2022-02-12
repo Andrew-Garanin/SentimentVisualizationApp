@@ -1,19 +1,17 @@
-from PyQt5.QtGui import QTextDocument
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtCore import SIGNAL, Qt, QPoint
 from PySide2.QtGui import QTextCursor
-from PySide2.QtWidgets import QMenu
 
 from ui import main
-from highlighter import MyHighlighter
+from SentimentHighlighter import SentimentHighlighter
 
 
 def print_to_console(text):
     print(text)
 
 
-def proposalSelected(selectedWord):
-    fixed = print_to_console(selectedWord)
+def proposalSelected(selected_word):
+    print_to_console(selected_word)
     # self.textField.textCursor().insertText(fixed)
 
 
@@ -38,12 +36,12 @@ class MyQtApp(main.Ui_MainWindow, QtWidgets.QMainWindow):
 
         cursor.endEditBlock()
 
-        selectedword = cursor.selectedText()
+        selected_word = cursor.selectedText()
         menu = self.textField.createStandardContextMenu()
-        menuItem = menu.addAction("Test Action")
+        menu_item = menu.addAction("Изменить тональность")
 
-        receiver = lambda prop=selectedword: proposalSelected(prop)
-        self.connect(menuItem, QtCore.SIGNAL('triggered()'), receiver)
+        receiver = lambda prop=selected_word: proposalSelected(prop)
+        self.connect(menu_item, QtCore.SIGNAL('triggered()'), receiver)
         text_field_pos = QPoint(pos.x() + self.geometry().x(), pos.y() + self.geometry().y())
         menu.popup(text_field_pos)
 
@@ -56,7 +54,7 @@ class MyQtApp(main.Ui_MainWindow, QtWidgets.QMainWindow):
 
     def highlight(self):
         doc = self.textField.document()
-        highlighter = MyHighlighter(doc)
+        highlighter = SentimentHighlighter(doc)
 
 
 if __name__ == '__main__':
