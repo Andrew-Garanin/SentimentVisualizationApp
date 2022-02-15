@@ -4,6 +4,7 @@ from PySide2.QtGui import QTextCursor
 
 from ui import main
 from SentimentHighlighter import SentimentHighlighter
+from AddNewWordDialog import AddWordDialog
 
 
 def print_to_console(text):
@@ -19,10 +20,12 @@ class MyQtApp(main.Ui_MainWindow, QtWidgets.QMainWindow):
     def __init__(self):
         super(MyQtApp, self).__init__()
         self.setupUi(self)
-        self.menu_open.triggered.connect(self.menu_open_action)
-        self.submit_btn.clicked.connect(self.highlight)
-
+        self.menuOpen.triggered.connect(self.menu_open_action)
+        self.buttonMarkup.clicked.connect(self.highlight)
         self.textField.customContextMenuRequested.connect(self.contextMenuEvent)
+
+        self.add_new_word_dialog = AddWordDialog(self)
+        self.menuAddNewWord.triggered.connect(self.menu_add_new_word_action)
 
     def contextMenuEvent(self, pos):
         #  menu = self.textField.createStandardContextMenu(pos)
@@ -51,6 +54,12 @@ class MyQtApp(main.Ui_MainWindow, QtWidgets.QMainWindow):
             with open(file_path, 'r', encoding='UTF-8') as file:
                 text = file.read()
                 self.textField.setText(text)
+
+    def menu_add_new_word_action(self):
+        self.add_new_word_dialog.newWordEdit.clear()
+        self.add_new_word_dialog.newWordEdit.setFocus()
+        self.add_new_word_dialog.radioButtonPSTV.setChecked(True)
+        self.add_new_word_dialog.show()
 
     def highlight(self):
         doc = self.textField.document()
