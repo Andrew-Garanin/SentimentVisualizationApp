@@ -33,8 +33,8 @@ class Ui_MainWindow(object):
         self.menuUndo.setObjectName(u"menuUndo")
         self.menuAddNewWord = QAction(MainWindow)
         self.menuAddNewWord.setObjectName(u"menuAddNewWord")
-        self.menuChangeSentiment = QAction(MainWindow)
-        self.menuChangeSentiment.setObjectName(u"menuChangeSentiment")
+        self.menuChangeWordSentiment = QAction(MainWindow)
+        self.menuChangeWordSentiment.setObjectName(u"menuChangeWordSentiment")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -103,7 +103,7 @@ class Ui_MainWindow(object):
         self.menu_2.addAction(self.menuPaste)
         self.menu_2.addAction(self.menuUndo)
         self.menu_3.addAction(self.menuAddNewWord)
-        self.menu_3.addAction(self.menuChangeSentiment)
+        self.menu_3.addAction(self.menuChangeWordSentiment)
 
         self.retranslateUi(MainWindow)
 
@@ -119,7 +119,7 @@ class Ui_MainWindow(object):
         self.menuPaste.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0441\u0442\u0430\u0432\u0438\u0442\u044c", None))
         self.menuUndo.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
         self.menuAddNewWord.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0442\u044c \u043d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e...", None))
-        self.menuChangeSentiment.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432\u0430...", None))
+        self.menuChangeWordSentiment.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432\u0430...", None))
         self.textField.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

@@ -142,7 +142,7 @@ p, li { white-space: pre-wrap; }
      <string>Словарь</string>
     </property>
     <addaction name="menuAddNewWord"/>
-    <addaction name="menuChangeSentiment"/>
+    <addaction name="menuChangeWordSentiment"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -184,7 +184,7 @@ p, li { white-space: pre-wrap; }
     <string>Добавть новое слово...</string>
    </property>
   </action>
-  <action name="menuChangeSentiment">
+  <action name="menuChangeWordSentiment">
    <property name="text">
     <string>Изменить тональность слова...</string>
    </property>

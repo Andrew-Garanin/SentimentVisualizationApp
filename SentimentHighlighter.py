@@ -29,8 +29,8 @@ class SentimentHighlighter(QSyntaxHighlighter):
         QSyntaxHighlighter.__init__(self, parent)
         self.parent = parent
         self.highlightingRules = []
-        #self.dictionary = DictionaryKartaSlovSent()
-        self.dictionary = DictionaryRuSentiLeks()
+        self.dictionary = DictionaryKartaSlovSent()
+        #self.dictionary = DictionaryRuSentiLeks()
 
         # PSTV
         brush = QBrush(Qt.darkGreen, Qt.SolidPattern)

@@ -9,7 +9,7 @@ class DictionaryRuSentiLeks:
         self.nlp = spacy.load("ru_core_news_md")
 
     def _read_dictionary_csv(self):
-        with open('../dictionaries_data/sentiment_dictionary_ru_senti_leks.csv', 'r', encoding='utf-8') as f:
+        with open('D:\\Projects\\PycharmProjects\\SentimentTextMarkup\\dictionaries_data\\sentiment_dictionary_ru_senti_leks.csv', 'r', encoding='utf-8') as f:
             reader = csv.reader(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL, skipinitialspace=True)
             row1 = next(reader)
 
