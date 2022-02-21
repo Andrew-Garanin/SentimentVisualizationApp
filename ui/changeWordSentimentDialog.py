@@ -43,6 +43,13 @@ class Ui_changeWordSentimentDialog(object):
         self.buttonChange = QPushButton(changeWordSentimentDialog)
         self.buttonChange.setObjectName(u"buttonChange")
         self.buttonChange.setGeometry(QRect(120, 260, 75, 23))
+        self.labelError = QLabel(changeWordSentimentDialog)
+        self.labelError.setObjectName(u"labelError")
+        self.labelError.setGeometry(QRect(90, 60, 261, 16))
+        font = QFont()
+        font.setPointSize(7)
+        self.labelError.setFont(font)
+        self.labelError.setStyleSheet(u"color: rgb(255, 0, 0);")
 
         self.retranslateUi(changeWordSentimentDialog)
 
@@ -59,5 +66,6 @@ class Ui_changeWordSentimentDialog(object):
         self.radioButtonNEUT.setText(QCoreApplication.translate("changeWordSentimentDialog", u"\u041d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f", None))
         self.buttonCancel.setText(QCoreApplication.translate("changeWordSentimentDialog", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
         self.buttonChange.setText(QCoreApplication.translate("changeWordSentimentDialog", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c", None))
+        self.labelError.setText("")
     # retranslateUi
 
