@@ -20,9 +20,9 @@ class DictionaryKartaSlovSent:
             return '-'
 
     def get_words(self):
-        return self._map_data.iloc[:, 0]
+        return list(self._map_data.iloc[:, 0].values)
 
-    def is_word_already_exist(self, term):
+    def is_word_exist(self, term):
         col_one_list = self._map_data['term'].tolist()
         a = term in col_one_list
         return a
@@ -40,5 +40,10 @@ class DictionaryKartaSlovSent:
         self._map_data = pd.concat([self._map_data, df2]).sort_index().reset_index(drop=True)
         self._map_data.to_csv("D:\\Projects\\PycharmProjects\\SentimentTextMarkup\\dictionaries_data\\sentiment_dictionary_karta_slov_sent.csv", index=False, sep=';')
 
-    def change_word_sentiment(self, term, wor_sentiment):
-        pass
+    def change_word_sentiment(self, term, word_sentiment):
+        word_index = self._map_data.index[self._map_data['term'] == term].tolist()[0]
+        self._map_data.at[word_index, 'tag'] = word_sentiment
+        self._map_data.to_csv(
+            "D:\\Projects\\PycharmProjects\\SentimentTextMarkup\\dictionaries_data\\sentiment_dictionary_karta_slov_sent.csv",
+            index=False, sep=';')
+        #  Что делать со значениями кроме слова и его тега??
