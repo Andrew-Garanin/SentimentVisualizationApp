@@ -9,10 +9,13 @@ class ChangeWordSentimentDialog(changeWordSentimentDialog.Ui_changeWordSentiment
         super(ChangeWordSentimentDialog, self).__init__(parent)
         self.setupUi(self)
         self.dictionary = dictionary
+        self.text_edit_original_style_sheet = self.wordEdit.styleSheet()  # original saved
+
+        # -----------------------------Привязка методов к кнопкам---------------------------
         self.buttonChange.clicked.connect(self.change_word_sentiment)
         self.buttonCancel.clicked.connect(self.close_dialog)
-        self.ss = self.wordEdit.styleSheet()  # original saved
 
+        # -----------------------------Подсказка для поля выбора слов-----------------------
         words = self.dictionary.get_words()
         completer = QCompleter(words)
         self.wordEdit.setCompleter(completer)
@@ -35,12 +38,12 @@ class ChangeWordSentimentDialog(changeWordSentimentDialog.Ui_changeWordSentiment
             return
 
         if self.dictionary.get_word_tag(word) == sentiment:
-            self.wordEdit.setStyleSheet(self.ss)  # back to original
+            self.wordEdit.setStyleSheet(self.text_edit_original_style_sheet)  # back to original
             self.labelError.setStyleSheet("color: rgb(255, 165, 0);")  # changed
             self.labelError.setText('У введённого слова уже установлена такая тональность')
             return
 
-        self.wordEdit.setStyleSheet(self.ss)  # back to original
+        self.wordEdit.setStyleSheet(self.text_edit_original_style_sheet)  # back to original
         self.labelError.setText('')
         self.dictionary.change_word_sentiment(word, sentiment)
 

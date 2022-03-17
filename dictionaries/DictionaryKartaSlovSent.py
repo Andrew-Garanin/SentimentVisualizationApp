@@ -7,9 +7,10 @@ class DictionaryKartaSlovSent:
     def __init__(self):
         self.csv_file_path = 'D:\\Projects\\PycharmProjects\\SentimentTextMarkup\\dictionaries_data\\sentiment_dictionary_karta_slov_sent.csv'
         self._map_data = pd.read_csv(self.csv_file_path, sep=';')
-        self.nlp = spacy.load("ru_core_news_md")
+        self.nlp = spacy.load("ru_core_news_lg")
 
     def get_word_tag(self, term):
+        # TODO: Вот тут исправить
         a = self._map_data.loc[self._map_data['term'] == term]
         b = a.values
         if b.size > 0:
@@ -17,7 +18,7 @@ class DictionaryKartaSlovSent:
             return b[0, 1]
         else:
             print(f"{term} - нет в словаре.")
-            return '-'
+            return 'NEUT'
 
     def get_words(self):
         return list(self._map_data.iloc[:, 0].values)

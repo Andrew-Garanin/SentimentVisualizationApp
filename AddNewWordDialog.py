@@ -7,9 +7,11 @@ class AddNewWordDialog(addNewWordDialog.Ui_addNewWordDialog, QtWidgets.QDialog):
         super(AddNewWordDialog, self).__init__(parent)
         self.setupUi(self)
         self.dictionary = dictionary
+        self.text_edit_original_style_sheet = self.newWordEdit.styleSheet()
+
+        # -----------------------------Привязка методов к кнопкам---------------------------
         self.buttonAdd.clicked.connect(self.add_new_word_to_dictionary)
         self.buttonCancel.clicked.connect(self.close_dialog)
-        self.ss = self.newWordEdit.styleSheet()  # original saved
 
     def add_new_word_to_dictionary(self):
         sentiment = ''
@@ -30,12 +32,10 @@ class AddNewWordDialog(addNewWordDialog.Ui_addNewWordDialog, QtWidgets.QDialog):
             self.labelError.setText('Введённое слово уже есть в словаре')
             return
 
-        self.newWordEdit.setStyleSheet(self.ss)  # back to original
-        self.labelError.setText('')
-        print("Добавляем!")
-        self.dictionary.add_new_word(text, sentiment)
-
         # Если не существует, то добавить слово в словарь, в алфавитном порядке
+        self.newWordEdit.setStyleSheet(self.text_edit_original_style_sheet)  # back to original
+        self.labelError.setText('')
+        self.dictionary.add_new_word(text, sentiment)
 
     def close_dialog(self):
         self.close()
