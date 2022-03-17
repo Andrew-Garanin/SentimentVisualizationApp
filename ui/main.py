@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(887, 652)
+        MainWindow.resize(887, 644)
         MainWindow.setContextMenuPolicy(Qt.NoContextMenu)
         self.menuOpen = QAction(MainWindow)
         self.menuOpen.setObjectName(u"menuOpen")
@@ -35,6 +35,8 @@ class Ui_MainWindow(object):
         self.menuAddNewWord.setObjectName(u"menuAddNewWord")
         self.menuChangeWordSentiment = QAction(MainWindow)
         self.menuChangeWordSentiment.setObjectName(u"menuChangeWordSentiment")
+        self.menuSingleSentence = QAction(MainWindow)
+        self.menuSingleSentence.setObjectName(u"menuSingleSentence")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -87,6 +89,8 @@ class Ui_MainWindow(object):
         self.menu_2.setObjectName(u"menu_2")
         self.menu_3 = QMenu(self.menubar)
         self.menu_3.setObjectName(u"menu_3")
+        self.menu_4 = QMenu(self.menubar)
+        self.menu_4.setObjectName(u"menu_4")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -95,6 +99,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu.menuAction())
         self.menubar.addAction(self.menu_2.menuAction())
         self.menubar.addAction(self.menu_3.menuAction())
+        self.menubar.addAction(self.menu_4.menuAction())
         self.menu.addAction(self.menuOpen)
         self.menu.addSeparator()
         self.menu.addAction(self.menuSave)
@@ -104,6 +109,7 @@ class Ui_MainWindow(object):
         self.menu_2.addAction(self.menuUndo)
         self.menu_3.addAction(self.menuAddNewWord)
         self.menu_3.addAction(self.menuChangeWordSentiment)
+        self.menu_4.addAction(self.menuSingleSentence)
 
         self.retranslateUi(MainWindow)
 
@@ -120,6 +126,7 @@ class Ui_MainWindow(object):
         self.menuUndo.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
         self.menuAddNewWord.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0442\u044c \u043d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e...", None))
         self.menuChangeWordSentiment.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432\u0430...", None))
+        self.menuSingleSentence.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0434\u043d\u043e \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0435", None))
         self.textField.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -129,5 +136,6 @@ class Ui_MainWindow(object):
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c", None))
         self.menu_3.setTitle(QCoreApplication.translate("MainWindow", u"\u0421\u043b\u043e\u0432\u0430\u0440\u044c", None))
+        self.menu_4.setTitle(QCoreApplication.translate("MainWindow", u"\u0414\u0435\u0440\u0435\u0432\u043e \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438", None))
     # retranslateUi
 
