@@ -1,13 +1,10 @@
 from PySide2.QtGui import *
 from PySide2.QtCore import *
-from dictionaries.DictionaryKartaSlovSent import DictionaryKartaSlovSent
-from dictionaries.DictionaryRuSentiLeks import DictionaryRuSentiLeks
 
 
 class Highlighter:
-    def __init__(self, document, cursor, text_field):
-        #self.dictionary = DictionaryRuSentiLeks()
-        self.dictionary = DictionaryKartaSlovSent()
+    def __init__(self, document, cursor, text_field, dictionary):
+        self.dictionary = dictionary
         self.document = document
         self.highlightingRules = []
         self.cursor = cursor
