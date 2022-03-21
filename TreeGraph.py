@@ -156,7 +156,7 @@ class TreeGraph(Digraph):
                     return positive
             if child['sentiment'] == neutral:
                 if parent['sentiment'] == positive:
-                    if parent['dependency'] in ['nsubj', 'nsubj:pass']:  # Положительный, если определяется подлежащее
+                    if parent['dependency'] in ['nsubj', 'nsubj:pass', 'ROOT']:  # Положительный, если определяется подлежащее ROOT????
                         return positive
                     if parent['dependency'] in ['obj', 'iobj', 'nmod']:  # нейтральный, если определяется дополнение
                         return neutral

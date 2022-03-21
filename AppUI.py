@@ -1,7 +1,7 @@
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtCore import QPoint
 from PySide2.QtGui import QTextCursor
-from PySide2.QtWidgets import QMenu
+from PySide2.QtWidgets import QMenu, QMdiSubWindow, QMainWindow
 from bs4 import BeautifulSoup
 
 from AddNewWordDialog import AddNewWordDialog

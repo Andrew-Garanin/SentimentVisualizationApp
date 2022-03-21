@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(887, 644)
+        MainWindow.resize(826, 668)
         MainWindow.setContextMenuPolicy(Qt.NoContextMenu)
         self.menuOpen = QAction(MainWindow)
         self.menuOpen.setObjectName(u"menuOpen")
@@ -64,7 +64,7 @@ class Ui_MainWindow(object):
 
         self.frame_3 = QFrame(self.frame)
         self.frame_3.setObjectName(u"frame_3")
-        self.frame_3.setGeometry(QRect(580, 230, 201, 121))
+        self.frame_3.setGeometry(QRect(530, 210, 201, 121))
         self.frame_3.setMinimumSize(QSize(100, 0))
         self.frame_3.setFrameShape(QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QFrame.Raised)
@@ -74,7 +74,7 @@ class Ui_MainWindow(object):
         self.buttonMarkup.setObjectName(u"buttonMarkup")
         self.buttonMarkup.setMinimumSize(QSize(100, 100))
 
-        self.gridLayout_3.addWidget(self.buttonMarkup, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.buttonMarkup, 0, 1, 1, 1)
 
 
         self.gridLayout.addWidget(self.frame, 1, 0, 1, 1)
@@ -82,7 +82,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 887, 21))
+        self.menubar.setGeometry(QRect(0, 0, 826, 21))
         self.menu = QMenu(self.menubar)
         self.menu.setObjectName(u"menu")
         self.menu_2 = QMenu(self.menubar)
