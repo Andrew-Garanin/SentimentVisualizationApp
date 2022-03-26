@@ -57,15 +57,15 @@ class Ui_changeWordSentimentDialog(object):
     # setupUi
 
     def retranslateUi(self, changeWordSentimentDialog):
-        changeWordSentimentDialog.setWindowTitle(QCoreApplication.translate("changeWordSentimentDialog", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432\u0430", None))
-        self.wordEdit.setPlaceholderText(QCoreApplication.translate("changeWordSentimentDialog", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0441\u043b\u043e\u0432\u043e", None))
-        self.labelWord.setText(QCoreApplication.translate("changeWordSentimentDialog", u"\u0421\u043b\u043e\u0432\u043e:", None))
-        self.chooseSentimentGroupBox.setTitle(QCoreApplication.translate("changeWordSentimentDialog", u"\u0422\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c", None))
-        self.radioButtonPSTV.setText(QCoreApplication.translate("changeWordSentimentDialog", u"\u041f\u043e\u043b\u043e\u0436\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
-        self.radioButtonNGTV.setText(QCoreApplication.translate("changeWordSentimentDialog", u"\u041e\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
-        self.radioButtonNEUT.setText(QCoreApplication.translate("changeWordSentimentDialog", u"\u041d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f", None))
-        self.buttonCancel.setText(QCoreApplication.translate("changeWordSentimentDialog", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
-        self.buttonChange.setText(QCoreApplication.translate("changeWordSentimentDialog", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c", None))
+        changeWordSentimentDialog.setWindowTitle(QCoreApplication.translate("", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432\u0430", None))
+        self.wordEdit.setPlaceholderText(QCoreApplication.translate("", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0441\u043b\u043e\u0432\u043e", None))
+        self.labelWord.setText(QCoreApplication.translate("", u"\u0421\u043b\u043e\u0432\u043e:", None))
+        self.chooseSentimentGroupBox.setTitle(QCoreApplication.translate("", u"\u0422\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c", None))
+        self.radioButtonPSTV.setText(QCoreApplication.translate("", u"\u041f\u043e\u043b\u043e\u0436\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
+        self.radioButtonNGTV.setText(QCoreApplication.translate("", u"\u041e\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
+        self.radioButtonNEUT.setText(QCoreApplication.translate("", u"\u041d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f", None))
+        self.buttonCancel.setText(QCoreApplication.translate("", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
+        self.buttonChange.setText(QCoreApplication.translate("", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c", None))
         self.labelError.setText("")
     # retranslateUi
 

@@ -1,16 +1,16 @@
+from PySide2 import QtWidgets
 import json
 
 from PySide2.QtWidgets import QGraphicsScene
-
-from TreeGraph import TreeGraph
-from ui.singleSentenceSentimentTree import singleSentenceSentimentTree
-from PySide2 import QtWidgets
 from termcolor import colored
 
+from TreeGraph import TreeGraph
+from ui.singleSentenceSentimentTreeForm import singleSentenceSentimentTreeForm
 
-class SingleSentenceSentimentTree(singleSentenceSentimentTree.Ui_singleSentenceSentimentTree, QtWidgets.QDialog):
-    def __init__(self, dictionary, parent=None):
-        super(SingleSentenceSentimentTree, self).__init__(parent)
+
+class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_MainWindow, QtWidgets.QMainWindow):
+    def __init__(self, dictionary):
+        super(SingleSentenceSentimentTreeForm, self).__init__()
         self.setupUi(self)
         self.dictionary = dictionary
 

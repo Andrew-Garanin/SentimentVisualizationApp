@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainMDIForm</class>
+ <widget class="QMainWindow" name="mainMDIForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1236</width>
+    <height>721</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QMdiArea" name="mdiArea"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1236</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Тональность текста</string>
+    </property>
+    <addaction name="menuSentimentTextMarkup"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Дерево тональности</string>
+    </property>
+    <addaction name="menuSingleSentence"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>Словарь</string>
+    </property>
+    <addaction name="menuAddNewWord"/>
+    <addaction name="menuChangeWordSentiment"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>Окна</string>
+    </property>
+    <addaction name="menuWindowsCascade"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_4"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="menuSentimentTextMarkup">
+   <property name="text">
+    <string>Тональность текста</string>
+   </property>
+  </action>
+  <action name="menuSingleSentence">
+   <property name="text">
+    <string>Одиночное предложение</string>
+   </property>
+  </action>
+  <action name="menuAddNewWord">
+   <property name="text">
+    <string>Добавить новое слово</string>
+   </property>
+  </action>
+  <action name="menuChangeWordSentiment">
+   <property name="text">
+    <string>Изменить тональность слова</string>
+   </property>
+  </action>
+  <action name="menuWindowsCascade">
+   <property name="text">
+    <string>Каскадом</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

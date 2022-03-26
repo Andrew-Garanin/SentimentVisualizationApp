@@ -1,19 +1,19 @@
+from PySide2 import QtWidgets
 from PySide2.QtWidgets import QCompleter
 
-from ui.changeWordSentimentDialog import changeWordSentimentDialog
-from PySide2 import QtWidgets
+from ui.changeWordSentimentForm import changeWordSentimentForm
 
 
-class ChangeWordSentimentDialog(changeWordSentimentDialog.Ui_changeWordSentimentDialog, QtWidgets.QDialog):
-    def __init__(self, dictionary, parent=None):
-        super(ChangeWordSentimentDialog, self).__init__(parent)
+class ChangeWordSentimentForm(changeWordSentimentForm.Ui_MainWindow, QtWidgets.QMainWindow):
+    def __init__(self, dictionary):
+        super(ChangeWordSentimentForm, self).__init__()
         self.setupUi(self)
         self.dictionary = dictionary
         self.text_edit_original_style_sheet = self.wordEdit.styleSheet()  # original saved
 
         # -----------------------------Привязка методов к кнопкам---------------------------
         self.buttonChange.clicked.connect(self.change_word_sentiment)
-        self.buttonCancel.clicked.connect(self.close_dialog)
+        #self.buttonCancel.clicked.connect(self.close_dialog)
 
         # -----------------------------Подсказка для поля выбора слов-----------------------
         words = self.dictionary.get_words()
