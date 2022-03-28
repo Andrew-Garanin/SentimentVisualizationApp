@@ -4,9 +4,10 @@ from graphviz import Digraph
 from tempfile import mkstemp
 import pathlib
 import tempfile
-from termcolor import colored
 import os
 import uuid
+
+from termcolor import colored
 
 
 class TreeGraph(Digraph):
@@ -17,6 +18,7 @@ class TreeGraph(Digraph):
         self.dictionary = dictionary
         self._create(json_tree, json_tree[0]['id'])
         self._files_to_delete = []
+        self.found_rules = []
 
     def _create(self, json_tree: list[dict], parent_index):
         """Creates a graph."""
@@ -91,10 +93,11 @@ class TreeGraph(Digraph):
             if element['dependency'] in self.main_dep:
                 dep_array.append(self.calculate_sentiment_by_rules(parent, element))
                 #dep_array.append(f"{element['text']} {parent['text']}")
-                #print(colored(f"{element['parent_id']}-{element['id']} {element['text']} {parent['text']} | ПРАВИЛО: {self.get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}", 'green'))
+                self.found_rules.append(f"{element['text']} {parent['text']} | ПРАВИЛО: {self.get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}")
+                print(colored(f"{element['text']} {parent['text']} | ПРАВИЛО: {self.get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}", 'green'))
             else:
                 dep_array.append(element['sentiment'])
-        print(f"{parent['id']}:{dep_array}")
+        #print(f"{parent['id']}:{dep_array}")
         parent['sentiment'] = self.calculate_node_sentiment_recoloring(dep_array)
         self.set_color(str(parent['id']), parent['sentiment'])
         #print(f"{parent['id']}:{parent['dependency']}")

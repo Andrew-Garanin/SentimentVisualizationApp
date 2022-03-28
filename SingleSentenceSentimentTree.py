@@ -1,11 +1,12 @@
-import json
+from ui.singleSentenceSentimentTree import singleSentenceSentimentTree
 
 from PySide2.QtWidgets import QGraphicsScene
+from PySide2 import QtWidgets
+
+import json
+from termcolor import colored
 
 from TreeGraph import TreeGraph
-from ui.singleSentenceSentimentTree import singleSentenceSentimentTree
-from PySide2 import QtWidgets
-from termcolor import colored
 
 
 class SingleSentenceSentimentTree(singleSentenceSentimentTree.Ui_singleSentenceSentimentTree, QtWidgets.QDialog):

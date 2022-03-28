@@ -1,14 +1,15 @@
-from PySide2 import QtWidgets
-import json
-
-from PySide2.QtWidgets import QGraphicsScene
-from termcolor import colored
-
-from TreeGraph import TreeGraph
 from ui.singleSentenceSentimentTreeForm import singleSentenceSentimentTreeForm
 
+from PySide2 import QtWidgets, QtGui
+from PySide2.QtWidgets import QGraphicsScene
 
-class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_MainWindow, QtWidgets.QMainWindow):
+from termcolor import colored
+import json
+
+from TreeGraph import TreeGraph
+
+
+class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_singleSentenceSentimentTreeForm, QtWidgets.QMainWindow):
     def __init__(self, dictionary):
         super(SingleSentenceSentimentTreeForm, self).__init__()
         self.setupUi(self)
@@ -71,6 +72,9 @@ class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_MainWin
         print(colored('-----------------------Найденные правила для выведения тональности-----------------------',
                       'green'))
         aboba = graph.seacrch_dep([self.main_json['tokens']], dict({'id': -1}))  # Поиск правил
+
+        self.foundRulesListWidget.addItems(graph.found_rules)
+
         print(colored('-----------------------------------------------------------------------------------------',
                       'green'))
         scene2 = QGraphicsScene()

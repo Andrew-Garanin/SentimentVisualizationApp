@@ -114,23 +114,23 @@ class Ui_sentimentTextMarkupForm(object):
     # setupUi
 
     def retranslateUi(self, sentimentTextMarkupForm):
-        sentimentTextMarkupForm.setWindowTitle(QCoreApplication.translate("", u"Sentiment Text Markup", None))
-        self.menuOpen.setText(QCoreApplication.translate("", u"\u041e\u0442\u043a\u0440\u044b\u0442\u044c...", None))
-        self.menuSave.setText(QCoreApplication.translate("", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
-        self.menuSaveAs.setText(QCoreApplication.translate("", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043a\u0430\u043a...", None))
-        self.menuCopy.setText(QCoreApplication.translate("", u"\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c", None))
-        self.menuPaste.setText(QCoreApplication.translate("", u"\u0412\u0441\u0442\u0430\u0432\u0438\u0442\u044c", None))
-        self.menuUndo.setText(QCoreApplication.translate("", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
-        self.menuAddNewWord.setText(QCoreApplication.translate("", u"\u0414\u043e\u0431\u0430\u0432\u0442\u044c \u043d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e...", None))
-        self.menuChangeWordSentiment.setText(QCoreApplication.translate("", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432\u0430...", None))
-        self.menuSingleSentence.setText(QCoreApplication.translate("", u"\u041e\u0434\u043d\u043e \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0435", None))
-        self.buttonMarkup.setText(QCoreApplication.translate("", u"\u0412\u044b\u0434\u0435\u043b\u0438\u0442\u044c \u0441\u043b\u043e\u0432\u0430!", None))
-        self.textField.setHtml(QCoreApplication.translate("", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        sentimentTextMarkupForm.setWindowTitle(QCoreApplication.translate("sentimentTextMarkupForm", u"\u0412\u044b\u0434\u0435\u043b\u0435\u043d\u0438\u0435 \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438 \u0441\u043b\u043e\u0432 \u0432 \u0442\u0435\u043a\u0441\u0442\u0435", None))
+        self.menuOpen.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u041e\u0442\u043a\u0440\u044b\u0442\u044c...", None))
+        self.menuSave.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
+        self.menuSaveAs.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043a\u0430\u043a...", None))
+        self.menuCopy.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c", None))
+        self.menuPaste.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u0412\u0441\u0442\u0430\u0432\u0438\u0442\u044c", None))
+        self.menuUndo.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
+        self.menuAddNewWord.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u0414\u043e\u0431\u0430\u0432\u0442\u044c \u043d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e...", None))
+        self.menuChangeWordSentiment.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432\u0430...", None))
+        self.menuSingleSentence.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u041e\u0434\u043d\u043e \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0435", None))
+        self.buttonMarkup.setText(QCoreApplication.translate("sentimentTextMarkupForm", u"\u0412\u044b\u0434\u0435\u043b\u0438\u0442\u044c \u0441\u043b\u043e\u0432\u0430!", None))
+        self.textField.setHtml(QCoreApplication.translate("sentimentTextMarkupForm", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
-        self.menu.setTitle(QCoreApplication.translate("", u"\u0424\u0430\u0439\u043b", None))
-        self.menu_2.setTitle(QCoreApplication.translate("", u"\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c", None))
+        self.menu.setTitle(QCoreApplication.translate("sentimentTextMarkupForm", u"\u0424\u0430\u0439\u043b", None))
+        self.menu_2.setTitle(QCoreApplication.translate("sentimentTextMarkupForm", u"\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c", None))
     # retranslateUi
 

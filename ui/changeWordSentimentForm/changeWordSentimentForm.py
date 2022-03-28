@@ -13,12 +13,12 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        if not MainWindow.objectName():
-            MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(409, 315)
-        self.centralwidget = QWidget(MainWindow)
+class Ui_changeWordSentimentForm(object):
+    def setupUi(self, changeWordSentimentForm):
+        if not changeWordSentimentForm.objectName():
+            changeWordSentimentForm.setObjectName(u"changeWordSentimentForm")
+        changeWordSentimentForm.resize(409, 315)
+        self.centralwidget = QWidget(changeWordSentimentForm)
         self.centralwidget.setObjectName(u"centralwidget")
         self.labelError = QLabel(self.centralwidget)
         self.labelError.setObjectName(u"labelError")
@@ -52,30 +52,30 @@ class Ui_MainWindow(object):
         self.buttonChange = QPushButton(self.centralwidget)
         self.buttonChange.setObjectName(u"buttonChange")
         self.buttonChange.setGeometry(QRect(120, 240, 75, 23))
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(MainWindow)
+        changeWordSentimentForm.setCentralWidget(self.centralwidget)
+        self.menubar = QMenuBar(changeWordSentimentForm)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 409, 21))
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(MainWindow)
+        changeWordSentimentForm.setMenuBar(self.menubar)
+        self.statusbar = QStatusBar(changeWordSentimentForm)
         self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        changeWordSentimentForm.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        self.retranslateUi(changeWordSentimentForm)
 
-        QMetaObject.connectSlotsByName(MainWindow)
+        QMetaObject.connectSlotsByName(changeWordSentimentForm)
     # setupUi
 
-    def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+    def retranslateUi(self, changeWordSentimentForm):
+        changeWordSentimentForm.setWindowTitle(QCoreApplication.translate("changeWordSentimentForm", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432\u0430", None))
         self.labelError.setText("")
-        self.labelWord.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043b\u043e\u0432\u043e:", None))
-        self.chooseSentimentGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u0422\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c", None))
-        self.radioButtonPSTV.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u043b\u043e\u0436\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
-        self.radioButtonNGTV.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
-        self.radioButtonNEUT.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f", None))
-        self.buttonCancel.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
-        self.wordEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0441\u043b\u043e\u0432\u043e", None))
-        self.buttonChange.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c", None))
+        self.labelWord.setText(QCoreApplication.translate("changeWordSentimentForm", u"\u0421\u043b\u043e\u0432\u043e:", None))
+        self.chooseSentimentGroupBox.setTitle(QCoreApplication.translate("changeWordSentimentForm", u"\u0422\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c", None))
+        self.radioButtonPSTV.setText(QCoreApplication.translate("changeWordSentimentForm", u"\u041f\u043e\u043b\u043e\u0436\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
+        self.radioButtonNGTV.setText(QCoreApplication.translate("changeWordSentimentForm", u"\u041e\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
+        self.radioButtonNEUT.setText(QCoreApplication.translate("changeWordSentimentForm", u"\u041d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f", None))
+        self.buttonCancel.setText(QCoreApplication.translate("changeWordSentimentForm", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
+        self.wordEdit.setPlaceholderText(QCoreApplication.translate("changeWordSentimentForm", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0441\u043b\u043e\u0432\u043e", None))
+        self.buttonChange.setText(QCoreApplication.translate("changeWordSentimentForm", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c", None))
     # retranslateUi
 

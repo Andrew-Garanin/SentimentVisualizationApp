@@ -13,12 +13,12 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        if not MainWindow.objectName():
-            MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(411, 315)
-        self.centralwidget = QWidget(MainWindow)
+class Ui_addNewWordForm(object):
+    def setupUi(self, addNewWordForm):
+        if not addNewWordForm.objectName():
+            addNewWordForm.setObjectName(u"addNewWordForm")
+        addNewWordForm.resize(411, 315)
+        self.centralwidget = QWidget(addNewWordForm)
         self.centralwidget.setObjectName(u"centralwidget")
         self.labelError = QLabel(self.centralwidget)
         self.labelError.setObjectName(u"labelError")
@@ -53,30 +53,30 @@ class Ui_MainWindow(object):
         self.buttonCancel = QPushButton(self.centralwidget)
         self.buttonCancel.setObjectName(u"buttonCancel")
         self.buttonCancel.setGeometry(QRect(210, 240, 75, 23))
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(MainWindow)
+        addNewWordForm.setCentralWidget(self.centralwidget)
+        self.menubar = QMenuBar(addNewWordForm)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 411, 21))
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(MainWindow)
+        addNewWordForm.setMenuBar(self.menubar)
+        self.statusbar = QStatusBar(addNewWordForm)
         self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        addNewWordForm.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        self.retranslateUi(addNewWordForm)
 
-        QMetaObject.connectSlotsByName(MainWindow)
+        QMetaObject.connectSlotsByName(addNewWordForm)
     # setupUi
 
-    def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+    def retranslateUi(self, addNewWordForm):
+        addNewWordForm.setWindowTitle(QCoreApplication.translate("addNewWordForm", u"\u041d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e", None))
         self.labelError.setText("")
-        self.newWordEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e", None))
-        self.chooseSentimentGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u0422\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c", None))
-        self.radioButtonPSTV.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u043b\u043e\u0436\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
-        self.radioButtonNGTV.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
-        self.radioButtonNEUT.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f", None))
-        self.buttonAdd.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
-        self.labelNewWord.setText(QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e:", None))
-        self.buttonCancel.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
+        self.newWordEdit.setPlaceholderText(QCoreApplication.translate("addNewWordForm", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e", None))
+        self.chooseSentimentGroupBox.setTitle(QCoreApplication.translate("addNewWordForm", u"\u0422\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c", None))
+        self.radioButtonPSTV.setText(QCoreApplication.translate("addNewWordForm", u"\u041f\u043e\u043b\u043e\u0436\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
+        self.radioButtonNGTV.setText(QCoreApplication.translate("addNewWordForm", u"\u041e\u0442\u0440\u0438\u0446\u0430\u0442\u0435\u043b\u044c\u043d\u0430\u044f", None))
+        self.radioButtonNEUT.setText(QCoreApplication.translate("addNewWordForm", u"\u041d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f", None))
+        self.buttonAdd.setText(QCoreApplication.translate("addNewWordForm", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c", None))
+        self.labelNewWord.setText(QCoreApplication.translate("addNewWordForm", u"\u041d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e:", None))
+        self.buttonCancel.setText(QCoreApplication.translate("addNewWordForm", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
     # retranslateUi
 

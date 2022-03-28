@@ -1,3 +1,5 @@
+from ui.sentimentTextMarkupForm import sentimentTextMarkupForm
+
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtCore import QPoint
 from PySide2.QtGui import QTextCursor
@@ -5,7 +7,6 @@ from PySide2.QtWidgets import QMenu
 from bs4 import BeautifulSoup
 
 from SentimentHighlighter import Highlighter
-from ui.sentimentTextMarkupForm import sentimentTextMarkupForm
 
 
 class SentimentTextMarkupForm(sentimentTextMarkupForm.Ui_sentimentTextMarkupForm, QtWidgets.QMainWindow):

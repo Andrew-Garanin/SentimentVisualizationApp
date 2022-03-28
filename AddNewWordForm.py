@@ -1,8 +1,9 @@
-from PySide2 import QtWidgets
 from ui.addNewWordForm import addNewWordForm
 
+from PySide2 import QtWidgets
 
-class AddNewWordForm(addNewWordForm.Ui_MainWindow, QtWidgets.QMainWindow):
+
+class AddNewWordForm(addNewWordForm.Ui_addNewWordForm, QtWidgets.QMainWindow):
     def __init__(self, dictionary):
         super(AddNewWordForm, self).__init__()
         self.setupUi(self)
@@ -11,7 +12,6 @@ class AddNewWordForm(addNewWordForm.Ui_MainWindow, QtWidgets.QMainWindow):
 
         # -----------------------------Привязка методов к кнопкам---------------------------
         self.buttonAdd.clicked.connect(self.add_new_word_to_dictionary)
-        #self.buttonCancel.clicked.connect(self.close_dialog)
 
     def add_new_word_to_dictionary(self):
         sentiment = ''
@@ -36,6 +36,3 @@ class AddNewWordForm(addNewWordForm.Ui_MainWindow, QtWidgets.QMainWindow):
         self.newWordEdit.setStyleSheet(self.text_edit_original_style_sheet)  # back to original
         self.labelError.setText('')
         self.dictionary.add_new_word(text, sentiment)
-
-    def close_dialog(self):
-        self.close()
