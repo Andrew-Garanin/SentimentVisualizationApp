@@ -28,6 +28,8 @@ class Ui_mainMDIForm(object):
         self.menuChangeWordSentiment.setObjectName(u"menuChangeWordSentiment")
         self.menuWindowsCascade = QAction(mainMDIForm)
         self.menuWindowsCascade.setObjectName(u"menuWindowsCascade")
+        self.menuSentimentExperiment = QAction(mainMDIForm)
+        self.menuSentimentExperiment.setObjectName(u"menuSentimentExperiment")
         self.centralwidget = QWidget(mainMDIForm)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -62,6 +64,8 @@ class Ui_mainMDIForm(object):
         self.menu_3.setObjectName(u"menu_3")
         self.menu_4 = QMenu(self.menubar)
         self.menu_4.setObjectName(u"menu_4")
+        self.menu_5 = QMenu(self.menubar)
+        self.menu_5.setObjectName(u"menu_5")
         mainMDIForm.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(mainMDIForm)
         self.statusbar.setObjectName(u"statusbar")
@@ -69,6 +73,7 @@ class Ui_mainMDIForm(object):
 
         self.menubar.addAction(self.menu.menuAction())
         self.menubar.addAction(self.menu_2.menuAction())
+        self.menubar.addAction(self.menu_5.menuAction())
         self.menubar.addAction(self.menu_3.menuAction())
         self.menubar.addAction(self.menu_4.menuAction())
         self.menu.addAction(self.menuSentimentTextMarkup)
@@ -76,6 +81,7 @@ class Ui_mainMDIForm(object):
         self.menu_3.addAction(self.menuAddNewWord)
         self.menu_3.addAction(self.menuChangeWordSentiment)
         self.menu_4.addAction(self.menuWindowsCascade)
+        self.menu_5.addAction(self.menuSentimentExperiment)
 
         self.retranslateUi(mainMDIForm)
 
@@ -89,9 +95,11 @@ class Ui_mainMDIForm(object):
         self.menuAddNewWord.setText(QCoreApplication.translate("mainMDIForm", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u043d\u043e\u0432\u043e\u0435 \u0441\u043b\u043e\u0432\u043e", None))
         self.menuChangeWordSentiment.setText(QCoreApplication.translate("mainMDIForm", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432\u0430", None))
         self.menuWindowsCascade.setText(QCoreApplication.translate("mainMDIForm", u"\u041a\u0430\u0441\u043a\u0430\u0434\u043e\u043c", None))
+        self.menuSentimentExperiment.setText(QCoreApplication.translate("mainMDIForm", u"\u041f\u0440\u043e\u0432\u0435\u0441\u0442\u0438 \u044d\u043a\u0441\u043f\u0435\u0440\u0438\u043c\u0435\u043d\u0442", None))
         self.menu.setTitle(QCoreApplication.translate("mainMDIForm", u"\u0422\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0442\u0435\u043a\u0441\u0442\u0430", None))
         self.menu_2.setTitle(QCoreApplication.translate("mainMDIForm", u"\u0414\u0435\u0440\u0435\u0432\u043e \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438", None))
         self.menu_3.setTitle(QCoreApplication.translate("mainMDIForm", u"\u0421\u043b\u043e\u0432\u0430\u0440\u044c", None))
         self.menu_4.setTitle(QCoreApplication.translate("mainMDIForm", u"\u041e\u043a\u043d\u0430", None))
+        self.menu_5.setTitle(QCoreApplication.translate("mainMDIForm", u"\u042d\u043a\u0441\u043f\u0435\u0440\u0438\u043c\u0435\u043d\u0442", None))
     # retranslateUi
 

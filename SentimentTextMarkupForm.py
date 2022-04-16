@@ -2,7 +2,7 @@ from ui.sentimentTextMarkupForm import sentimentTextMarkupForm
 
 from PySide2 import QtWidgets, QtCore
 from PySide2.QtCore import QPoint
-from PySide2.QtGui import QTextCursor
+from PySide2.QtGui import QTextCursor, QCursor
 from PySide2.QtWidgets import QMenu
 from bs4 import BeautifulSoup
 
@@ -85,5 +85,5 @@ class SentimentTextMarkupForm(sentimentTextMarkupForm.Ui_sentimentTextMarkupForm
         self.connect(menu_NGTV, QtCore.SIGNAL('triggered()'), receiver_NGTV)
         self.connect(menu_NEUT, QtCore.SIGNAL('triggered()'), receiver_NEUT)
 
-        text_field_pos = QPoint(pos.x() + self.geometry().x(), pos.y() + self.geometry().y())
-        menu.popup(text_field_pos)
+        #text_field_pos = QPoint(pos.x() + self.geometry().x(), pos.y() + self.geometry().y())
+        menu.popup(QCursor.pos())

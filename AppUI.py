@@ -6,6 +6,7 @@ from SentimentTextMarkupForm import SentimentTextMarkupForm
 from ChangeWordSentimentForm import ChangeWordSentimentForm
 from SingleSentenceSentimentTreeForm import SingleSentenceSentimentTreeForm
 from dictionaries.DictionaryKartaSlovSent import DictionaryKartaSlovSent
+from SentimentExperimentForm import SentimentExperimentForm
 
 
 class SentimentVisualizationApp(mainMDIForm.Ui_mainMDIForm, QtWidgets.QMainWindow):
@@ -19,12 +20,14 @@ class SentimentVisualizationApp(mainMDIForm.Ui_mainMDIForm, QtWidgets.QMainWindo
         self.add_new_word_form = None
         self.change_word_sentiment_form = None
         self.single_sentence_sentiment_tree_form = None
+        self.sentiment_experiment_form = None
 
         # -----------------------------Привязка методов к кнопкам---------------------------
         self.menuSentimentTextMarkup.triggered.connect(self.menu_sentiment_text_markup)
         self.menuAddNewWord.triggered.connect(self.menu_add_new_word)
         self.menuChangeWordSentiment.triggered.connect(self.menu_change_word_sentiment)
         self.menuSingleSentence.triggered.connect(self.menu_single_sentence_sentiment_tree)
+        self.menuSentimentExperiment.triggered.connect(self.menu_sentiment_experiment)
         self.menuWindowsCascade.triggered.connect(self.menu_windows_cascade)
 
     # -----------------------------Методы меню-----------------------------
@@ -56,9 +59,16 @@ class SentimentVisualizationApp(mainMDIForm.Ui_mainMDIForm, QtWidgets.QMainWindo
         self.mdi.addSubWindow(self.single_sentence_sentiment_tree_form)
         self.single_sentence_sentiment_tree_form.show()
 
+    def menu_sentiment_experiment(self):
+        self.sentiment_experiment_form = SentimentExperimentForm(self.dictionary)
+        self.mdi.addSubWindow(self.sentiment_experiment_form)
+        self.sentiment_experiment_form.show()
+
     def menu_windows_cascade(self):
-        #self.mdi.cascadeSubWindows() # Arranges subwindows in MDiArea in a cascaded fashion
-        self.mdi.tileSubWindows()# Arranges subwindows in MDiArea in a tiled fashion
+        self.mdi.cascadeSubWindows()  # Arranges subwindows in MDiArea in a cascaded fashion
+
+    def menu_windows_tile(self):
+        self.mdi.tileSubWindows()  # Arranges subwindows in MDiArea in a tiled fashion
 
 
 if __name__ == '__main__':
