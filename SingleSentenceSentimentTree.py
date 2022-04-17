@@ -71,7 +71,7 @@ class SingleSentenceSentimentTree(singleSentenceSentimentTree.Ui_singleSentenceS
 
         print(colored('-----------------------Найденные правила для выведения тональности-----------------------',
                       'green'))
-        aboba = graph.seacrch_dep([self.main_json['tokens']], dict({'id': -1}))  # Поиск правил
+        aboba = graph.search_dep([self.main_json['tokens']], dict({'id': -1}))  # Поиск правил
         print(colored('-----------------------------------------------------------------------------------------',
                       'green'))
         scene2 = QGraphicsScene()

@@ -2,10 +2,7 @@ from ui.singleSentenceSentimentTreeForm import singleSentenceSentimentTreeForm
 
 from PySide2 import QtWidgets, QtGui
 from PySide2.QtWidgets import QGraphicsScene
-
-from termcolor import colored
-import json
-
+from SentenceDependencyTree import SentenceDependencyTree
 from TreeGraph import TreeGraph
 
 
@@ -14,75 +11,28 @@ class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_singleS
         super(SingleSentenceSentimentTreeForm, self).__init__()
         self.setupUi(self)
         self.dictionary = dictionary
-
         # -----------------------------Привязка методов к кнопкам---------------------------
         self.generateTreeButton.clicked.connect(self.generate_tree)
         self.clearButton.clicked.connect(self.clear)
 
-    def create_leaf(self, parent, id, parent_id, text, dependency, pos, lemma, sentiment):
-        parent.append(
-            {'id': id, 'parent_id': parent_id, 'text': text, 'dependency': dependency, 'pos': pos, 'lemma': lemma,
-             'sentiment': sentiment, 'children': []})
-        return len(parent) - 1
-
-    def create_tree(self, token, parents_children):
-        for child in token:
-            if not [child_ for child_ in child.children]:
-                if child.is_punct:
-                    continue
-                self.create_leaf(parents_children, child.i, child.head.i,
-                            child.text, child.dep_, child.pos_, child.lemma_, '')
-            else:
-                i = self.create_leaf(parents_children, child.i, child.head.i,
-                                child.text, child.dep_, child.pos_, child.lemma_, '')
-                self.create_tree(child.children, parents_children[i]['children'])
-
     def generate_tree(self):
         text = self.textEditSentense.toPlainText()
-        self.doc = self.dictionary.nlp(text)
+        dependency_tree = SentenceDependencyTree(text, dictionary=self.dictionary)
 
-        self.main_json = dict()
-        self.main_json['text'] = self.doc.text
-
-        self.root = None
-        for sent in self.doc.sents:
-            self.root = sent.root
-
-        self.main_json['tokens'] = dict()
-        self.main_json['tokens']['id'] = self.root.i
-        self.main_json['tokens']['text'] = self.root.text
-        self.main_json['tokens']['dependency'] = self.root.dep_
-        self.main_json['tokens']['pos'] = self.root.pos_
-        self.main_json['tokens']['lemma'] = self.root.lemma_
-        self.main_json['tokens']['sentiment'] = ''
-        self.main_json['tokens']['children'] = []
-
-        self.create_tree(self.root.children, self.main_json['tokens']['children'])
-        print(json.dumps(self.main_json, ensure_ascii=False, indent=4))
-
-        graph = TreeGraph([self.main_json['tokens']], self.dictionary)
-        #graph.attr(label=self.main_json['text'], labelloc="t")
-
+        graph1 = TreeGraph([dependency_tree.sentiment_by_dictionary['tokens']])
         scene1 = QGraphicsScene()
-
-        scene1.addPixmap(graph.render_image())
+        scene1.addPixmap(graph1.render_image())
         self.graphicsViewFirstTree.setScene(scene1)
+        graph1.clear_files()
 
-
-        print(colored('-----------------------Найденные правила для выведения тональности-----------------------',
-                      'green'))
-        aboba = graph.seacrch_dep([self.main_json['tokens']], dict({'id': -1}))  # Поиск правил
-
-        self.foundRulesListWidget.addItems(graph.found_rules)
-
-        print(colored('-----------------------------------------------------------------------------------------',
-                      'green'))
+        graph2 = TreeGraph([dependency_tree.sentiment_by_rules['tokens']])
         scene2 = QGraphicsScene()
-
-        scene2.addPixmap(graph.render_image())
+        scene2.addPixmap(graph2.render_image())
         self.graphicsViewSecondTree.setScene(scene2)
-        self.labelFinalSentiment.setText(f"Итоговая тональность: {aboba['sentiment']}")
-        graph.clear_files()
+        graph2.clear_files()
+
+        self.foundRulesListWidget.addItems(dependency_tree.found_rules)
+        self.labelFinalSentiment.setText(f"Итоговая тональность: {dependency_tree.sentence_sentiment}")
 
     def clear(self):
         self.labelFinalSentiment.setText('') # Итоговая тональность:

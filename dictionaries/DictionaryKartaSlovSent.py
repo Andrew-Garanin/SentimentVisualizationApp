@@ -14,10 +14,10 @@ class DictionaryKartaSlovSent:
         a = self._map_data.loc[self._map_data['term'] == term]
         b = a.values
         if b.size > 0:
-            print(b[0, 0], b[0, 1])
+            #print(b[0, 0], b[0, 1])
             return b[0, 1]
         else:
-            print(f"{term} - нет в словаре.")
+            #print(f"{term} - нет в словаре.")
             return 'NEUT'
 
     def get_words(self):
