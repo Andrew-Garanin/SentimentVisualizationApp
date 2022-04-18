@@ -1,12 +1,12 @@
 from ui.mainMDIForm import mainMDIForm
-from PySide2 import QtWidgets, QtCore
+from PySide2 import QtWidgets
 
-from AddNewWordForm import AddNewWordForm
-from SentimentTextMarkupForm import SentimentTextMarkupForm
-from ChangeWordSentimentForm import ChangeWordSentimentForm
-from SingleSentenceSentimentTreeForm import SingleSentenceSentimentTreeForm
+from sub_forms.AddNewWordForm import AddNewWordForm
+from sub_forms.SentimentTextMarkupForm import SentimentTextMarkupForm
+from sub_forms.ChangeWordSentimentForm import ChangeWordSentimentForm
+from sub_forms.SingleSentenceSentimentTreeForm import SingleSentenceSentimentTreeForm
 from dictionaries.DictionaryKartaSlovSent import DictionaryKartaSlovSent
-from SentimentExperimentForm import SentimentExperimentForm
+from sub_forms.SentimentExperimentForm import SentimentExperimentForm
 
 
 class SentimentVisualizationApp(mainMDIForm.Ui_mainMDIForm, QtWidgets.QMainWindow):
