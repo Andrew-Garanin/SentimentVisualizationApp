@@ -2,62 +2,119 @@ from collections import Counter
 import json
 
 
-class SentenceDependencyTree:
-    def __init__(self, text, dictionary):
-        self.dictionary = dictionary
-        self.main_dep = ['nsubj', 'nsubj:pass', 'obj', 'iobj', 'obl', 'obl:agent', 'nmod', 'amod', 'det', 'advmod']  # Зависимости пар слов, за которыми следим
-        self.found_rules = []
+def get_sentiment_type(dependency: str) -> str:
+    """
+    Определяет строковое представление 
+    :param dependency:
+    :return:
+    """
+    if dependency in ['nsubj', 'nsubj:pass']:
+        return 'Подлежащее - сказуемое'
+    if dependency in ['obj', 'iobj']:
+        return 'Дополнение - дополняемое действие'
+    if dependency in ['obl', 'obl:agent', 'advmod']:  # advmod ???
+        return 'Обстоятельство - действие'
+    if dependency in ['nmod']:
+        return 'Дополнение - дополняемый предмет'
+    if dependency in ['amod', 'det']:
+        return 'Определение - определяемое'
 
+
+class SentenceDependencyTree:
+    def __init__(self, dictionary):
+        """
+        Реализует дерево зависимостей слов в предложении в формате json. Каждый элемент дерева
+        содержит информацию о соответствующем слове: зависимость от других слов, pos-тег,
+        лемму слова и его эмоциональную окраску.
+        :param dictionary: Тональный словарь
+        """
+        self.dictionary = dictionary
+        self.main_dep = ['nsubj', 'nsubj:pass', 'obj', 'iobj', 'obl', 'obl:agent', 'nmod', 'amod', 'det',
+                         'advmod']  # Зависимости пар слов, за которыми следим
+        self.sentiment_by_dictionary = None  # Дерево зависимостей с тональностью слов, определенной по тональному словарю
+        self.sentiment_by_rules = None  # Дерево зависимостей с тональностью слов, определенной по правилам
+        self.sentence_sentiment = None  # Итоговая тональность предложения TODO: поменять на метод get_sentence_sentiment
+        self.found_rules = []  # Найденные в предложении правила
+
+    def refresh_data(self) -> None:
+        """
+        Сбрасывает информацию по предложению.
+        """
+        self.found_rules = []
         self.sentiment_by_dictionary = None
         self.sentiment_by_rules = None
         self.sentence_sentiment = None
 
-        self.generate_tree(text)
-
-    def create_leaf(self, parent, id, parent_id, text, dependency, pos, lemma, sentiment):
-        parent.append(
+    def _create_node(self, parents_children: [], id: int, parent_id: int, text: str,
+                     dependency: str, pos: str, lemma: str, sentiment: str) -> int:
+        """
+        Создаёт вершину дерева.
+        :param parents_children: массив исходящих вершин родителя
+        :param id: уникальный, в пределах дерева, идентификатор вершины
+        :param parent_id: идентификатор родителя
+        :param text: строковое представление слова
+        :param dependency: зависимость слова от его родителя
+        :param pos: pos-тег слова
+        :param lemma: лемма слова
+        :param sentiment: тональность слова
+        :return: индекс слова в массиве исходящих вершин родителя
+        """
+        parents_children.append(
             {'id': id, 'parent_id': parent_id, 'text': text, 'dependency': dependency, 'pos': pos, 'lemma': lemma,
              'sentiment': sentiment, 'children': []})
-        return len(parent) - 1
+        return len(parents_children) - 1
 
-    def create_tree(self, token, parents_children):
+    def _create_tree(self, token, parents_children: []) -> None:
+        """
+        Рекурсивно создает дерево в корне со значением token.
+        :param token: корень создаваемого дерева
+        :param parents_children: массив исходящих вершин родителя
+        :return:
+        """
         for child in token:
             if not [child_ for child_ in child.children]:
                 if child.is_punct:
                     continue
-                self.create_leaf(parents_children, child.i, child.head.i,
-                            child.text, child.dep_, child.pos_, child.lemma_, self.dictionary.get_word_tag(child.lemma_))
+                self._create_node(parents_children, child.i, child.head.i,
+                                  child.text, child.dep_, child.pos_, child.lemma_,
+                                  self.dictionary.get_word_tag(child.lemma_))
             else:
-                i = self.create_leaf(parents_children, child.i, child.head.i,
-                                child.text, child.dep_, child.pos_, child.lemma_, self.dictionary.get_word_tag(child.lemma_))
-                self.create_tree(child.children, parents_children[i]['children'])
+                i = self._create_node(parents_children, child.i, child.head.i,
+                                      child.text, child.dep_, child.pos_, child.lemma_,
+                                      self.dictionary.get_word_tag(child.lemma_))
+                self._create_tree(child.children, parents_children[i]['children'])
 
     def generate_tree(self, text):
-        self.doc = self.dictionary.nlp(text)
+        """
+        Создаёт два дерева: на основе тонального словаря и на основе правил, а так же делает вывод о тональности всего предложения
+        :param text: исходный текст предложения
+        """
+        self.refresh_data()
+        doc = self.dictionary.nlp(text)
 
         self.sentiment_by_dictionary = dict()
-        self.sentiment_by_dictionary['text'] = self.doc.text
+        self.sentiment_by_dictionary['text'] = doc.text
 
-        self.root = None
-        for sent in self.doc.sents:
-            self.root = sent.root
+        root = None
+        for sent in doc.sents:
+            root = sent.root
 
         self.sentiment_by_dictionary['tokens'] = dict()
-        self.sentiment_by_dictionary['tokens']['id'] = self.root.i
-        self.sentiment_by_dictionary['tokens']['text'] = self.root.text
-        self.sentiment_by_dictionary['tokens']['dependency'] = self.root.dep_
-        self.sentiment_by_dictionary['tokens']['pos'] = self.root.pos_
-        self.sentiment_by_dictionary['tokens']['lemma'] = self.root.lemma_
-        self.sentiment_by_dictionary['tokens']['sentiment'] = self.dictionary.get_word_tag(self.root.lemma_)
+        self.sentiment_by_dictionary['tokens']['id'] = root.i
+        self.sentiment_by_dictionary['tokens']['text'] = root.text
+        self.sentiment_by_dictionary['tokens']['dependency'] = root.dep_
+        self.sentiment_by_dictionary['tokens']['pos'] = root.pos_
+        self.sentiment_by_dictionary['tokens']['lemma'] = root.lemma_
+        self.sentiment_by_dictionary['tokens']['sentiment'] = self.dictionary.get_word_tag(root.lemma_)
         self.sentiment_by_dictionary['tokens']['children'] = []
 
-        self.create_tree(self.root.children, self.sentiment_by_dictionary['tokens']['children'])
+        self._create_tree(root.children, self.sentiment_by_dictionary['tokens']['children'])
 
         self.sentiment_by_rules = json.loads(json.dumps(self.sentiment_by_dictionary.copy()))
 
         aboba = self.search_dep([self.sentiment_by_rules['tokens']], dict({'id': -1}))  # Поиск правил
-        #print(json.dumps(self.sentiment_by_dictionary, ensure_ascii=False, indent=4))
-        #print(json.dumps(self.sentiment_by_rules, ensure_ascii=False, indent=4))
+        # print(json.dumps(self.sentiment_by_dictionary, ensure_ascii=False, indent=4))
+        # print(json.dumps(self.sentiment_by_rules, ensure_ascii=False, indent=4))
 
         self.sentence_sentiment = aboba['sentiment']
 
@@ -69,7 +126,7 @@ class SentenceDependencyTree:
             if element['dependency'] in self.main_dep:
                 dep_array.append(self.calculate_sentiment_by_rules(parent, element))
                 self.found_rules.append(
-                    f"{element['text']} {parent['text']} | ПРАВИЛО: {self.get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}")
+                    f"{element['text']} {parent['text']} | ПРАВИЛО: {get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}")
                 # print(colored(
                 #     f"{element['text']} {parent['text']} | ПРАВИЛО: {self.get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}",
                 #     'green'))
@@ -77,18 +134,6 @@ class SentenceDependencyTree:
                 dep_array.append(element['sentiment'])
         parent['sentiment'] = self.calculate_node_sentiment_recoloring(dep_array)
         return parent
-
-    def get_sentiment_type(self, dependency):
-        if dependency in ['nsubj', 'nsubj:pass']:
-            return 'Подлежащее - сказуемое'
-        if dependency in ['obj', 'iobj']:
-            return 'Дополнение - дополняемое действие'
-        if dependency in ['obl', 'obl:agent', 'advmod']:  # advmod &&&
-            return 'Обстоятельство - действие'
-        if dependency in ['nmod']:
-            return 'Дополнение - дополняемый предмет'
-        if dependency in ['amod', 'det']:
-            return 'Определение - определяемое'
 
     def calculate_sentiment_by_rules(self, parent, child):
         positive = 'PSTV'

@@ -17,7 +17,8 @@ class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_singleS
 
     def generate_tree(self):
         text = self.textEditSentense.toPlainText()
-        dependency_tree = SentenceDependencyTree(text, dictionary=self.dictionary)
+        dependency_tree = SentenceDependencyTree(self.dictionary)
+        dependency_tree.generate_tree(text)
 
         graph1 = TreeGraph([dependency_tree.sentiment_by_dictionary['tokens']])
         scene1 = QGraphicsScene()
