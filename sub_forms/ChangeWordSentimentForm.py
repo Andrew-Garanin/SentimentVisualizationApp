@@ -2,10 +2,15 @@ from ui.changeWordSentimentForm import changeWordSentimentForm
 
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import QCompleter
+from SentimentType import SentimentType
 
 
 class ChangeWordSentimentForm(changeWordSentimentForm.Ui_changeWordSentimentForm, QtWidgets.QMainWindow):
     def __init__(self, dictionary):
+        """
+        Форма для изменения тональности слова из словаря.
+        :param dictionary: тональный словарь
+        """
         super(ChangeWordSentimentForm, self).__init__()
         self.setupUi(self)
         self.dictionary = dictionary
@@ -20,14 +25,17 @@ class ChangeWordSentimentForm(changeWordSentimentForm.Ui_changeWordSentimentForm
         self.wordEdit.setCompleter(completer)
 
     def change_word_sentiment(self):
+        """
+        Изменяет тональность слова
+        """
         word = self.wordEdit.text().lower().strip()
         sentiment = ''
         if self.radioButtonPSTV.isChecked():
-            sentiment = 'PSTV'
+            sentiment = SentimentType.POSITIVE.value
         if self.radioButtonNGTV.isChecked():
-            sentiment = 'NGTV'
+            sentiment = SentimentType.NEGATIVE.value
         if self.radioButtonNEUT.isChecked():
-            sentiment = 'NEUT'
+            sentiment = SentimentType.NEUTRAL.value
 
         words = self.dictionary.get_words()
         if word not in words:
