@@ -48,7 +48,7 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         """
         dependency_tree = SentenceDependencyTree(self.dictionary)
         count = 0
-        n = 500
+        n = 400
         self._initialize_progress_bar(n)
 
         xl = Dispatch("Excel.Application")
@@ -57,12 +57,11 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
             r'D:\\Projects\\PycharmProjects\\SentimentTextMarkup\\templates\\Шаблон_эксперимент_статистика.xltx')
         ws = wb.Worksheets("Лист1")
         # ws.Range("C5").Value += 1
-
-        for index, row in self.sentence_markup_file.head(n).iterrows():
+        print(self.sentence_markup_file.head(n))
+        for index, row in self.sentence_markup_file.tail(n).iterrows():
             dependency_tree.generate_tree(row['Sentence'])
-
+            count += 1
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.POSITIVE.value:
-
                 # Таблицы контингентности
                 if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
                     ws.Range("C5").Value += 1
@@ -113,15 +112,39 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
 
             self.progress_bar.setValue(self.progress_bar.value()+1)
         self.progress_bar.setVisible(False)
+        print(count)
 
-        # Качество классификации
+        # Качество классификации. Первая таблица
         # PSTV
         ws.Range("B21").Value = ws.Range("C5").Value/(ws.Range("C5").Value + ws.Range("D5").Value)
         ws.Range("C21").Value = ws.Range("C5").Value/(ws.Range("C5").Value + ws.Range("C6").Value)
-        ws.Range("D21").Value = (ws.Range("B21").Value * ws.Range("C21").Value)/(ws.Range("B21").Value + ws.Range("C21").Value)
+        ws.Range("D21").Value = 2 * (ws.Range("B21").Value * ws.Range("C21").Value)/(ws.Range("B21").Value + ws.Range("C21").Value)
         ws.Range("E21").Value = ws.Range("C5").Value + ws.Range("C6").Value
 
         # NGTV
+        ws.Range("B22").Value = ws.Range("C10").Value/(ws.Range("C10").Value + ws.Range("D10").Value)
+        ws.Range("C22").Value = ws.Range("C10").Value/(ws.Range("C10").Value + ws.Range("C11").Value)
+        ws.Range("D22").Value = 2 * (ws.Range("B22").Value * ws.Range("C22").Value)/(ws.Range("B22").Value + ws.Range("C22").Value)
+        ws.Range("E22").Value = ws.Range("C10").Value + ws.Range("C11").Value
+
+        # NEUT
+        ws.Range("B23").Value = ws.Range("C15").Value/(ws.Range("C15").Value + ws.Range("D15").Value)
+        ws.Range("C23").Value = ws.Range("C15").Value/(ws.Range("C15").Value + ws.Range("C16").Value)
+        ws.Range("D23").Value = 2 * (ws.Range("B23").Value * ws.Range("C23").Value)/(ws.Range("B23").Value + ws.Range("C23").Value)
+        ws.Range("E23").Value = ws.Range("C15").Value + ws.Range("C16").Value
+
+        # Average
+        ws.Range("B24").Value = (ws.Range("C5").Value + ws.Range("C10").Value + ws.Range("C15").Value)/(ws.Range("C5").Value + ws.Range("D5").Value +
+                                                                                                        ws.Range("C10").Value + ws.Range("D10").Value +
+                                                                                                        ws.Range("C15").Value + ws.Range("D15").Value)
+        ws.Range("C24").Value = (ws.Range("C5").Value + ws.Range("C10").Value + ws.Range("C15").Value)/(ws.Range("C5").Value + ws.Range("C6").Value +
+                                                                                                        ws.Range("C10").Value + ws.Range("C11").Value +
+                                                                                                        ws.Range("C15").Value + ws.Range("C16").Value)
+        ws.Range("D24").Value = 2 * (ws.Range("B24").Value * ws.Range("C24").Value)/(ws.Range("B24").Value + ws.Range("C24").Value)
+        ws.Range("E24").Value = ws.Range("E21").Value + ws.Range("E22").Value + ws.Range("E23").Value
+
+        # Качество классификации. Вторая таблица
+        # PSTV
 
     def _initialize_progress_bar(self, maximum: int) -> None:
         """
