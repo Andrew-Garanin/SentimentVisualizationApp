@@ -48,7 +48,7 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         """
         dependency_tree = SentenceDependencyTree(self.dictionary)
         count = 0
-        n = 100
+        n = 500
         self._initialize_progress_bar(n)
 
         xl = Dispatch("Excel.Application")
@@ -63,6 +63,7 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
 
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.POSITIVE.value:
 
+                # Таблицы контингентности
                 if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
                     ws.Range("C5").Value += 1
                     ws.Range("D11").Value += 1
@@ -111,10 +112,16 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
                     ws.Range("C15").Value += 1
 
             self.progress_bar.setValue(self.progress_bar.value()+1)
-        print(count)
         self.progress_bar.setVisible(False)
 
+        # Качество классификации
+        # PSTV
+        ws.Range("B21").Value = ws.Range("C5").Value/(ws.Range("C5").Value + ws.Range("D5").Value)
+        ws.Range("C21").Value = ws.Range("C5").Value/(ws.Range("C5").Value + ws.Range("C6").Value)
+        ws.Range("D21").Value = (ws.Range("B21").Value * ws.Range("C21").Value)/(ws.Range("B21").Value + ws.Range("C21").Value)
+        ws.Range("E21").Value = ws.Range("C5").Value + ws.Range("C6").Value
 
+        # NGTV
 
     def _initialize_progress_bar(self, maximum: int) -> None:
         """
