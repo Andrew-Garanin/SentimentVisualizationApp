@@ -1,7 +1,10 @@
 from PySide2 import QtWidgets
+
+from SentimentType import SentimentType
 from ui.sentimentExperimentForm import sentimentExperimentForm
 import pandas as pd
 from SentenceDependencyTree import SentenceDependencyTree
+from win32com.client import Dispatch
 
 
 def convert_sentiment_tag(tag):
@@ -47,14 +50,71 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         count = 0
         n = 100
         self._initialize_progress_bar(n)
+
+        xl = Dispatch("Excel.Application")
+        xl.Visible = True
+        wb = xl.Workbooks.Open(
+            r'D:\\Projects\\PycharmProjects\\SentimentTextMarkup\\templates\\Шаблон_эксперимент_статистика.xltx')
+        ws = wb.Worksheets("Лист1")
+        # ws.Range("C5").Value += 1
+
         for index, row in self.sentence_markup_file.head(n).iterrows():
             dependency_tree.generate_tree(row['Sentence'])
 
-            if convert_sentiment_tag(row['Sentiment']) == dependency_tree.sentence_sentiment:
-                count += 1
+            if convert_sentiment_tag(row['Sentiment']) == SentimentType.POSITIVE.value:
+
+                if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
+                    ws.Range("C5").Value += 1
+                    ws.Range("D11").Value += 1
+                    ws.Range("D16").Value += 1
+
+                if dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
+                    ws.Range("C6").Value += 1
+                    ws.Range("D10").Value += 1
+                    ws.Range("D16").Value += 1
+
+                if dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
+                    ws.Range("C6").Value += 1
+                    ws.Range("D11").Value += 1
+                    ws.Range("D15").Value += 1
+
+            if convert_sentiment_tag(row['Sentiment']) == SentimentType.NEGATIVE.value:
+                if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
+                    ws.Range("D5").Value += 1
+                    ws.Range("C11").Value += 1
+                    ws.Range("D16").Value += 1
+
+                if dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
+                    ws.Range("D6").Value += 1
+                    ws.Range("C10").Value += 1
+                    ws.Range("D16").Value += 1
+
+                if dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
+                    ws.Range("D6").Value += 1
+                    ws.Range("C11").Value += 1
+                    ws.Range("D15").Value += 1
+
+            if convert_sentiment_tag(row['Sentiment']) == SentimentType.NEUTRAL.value:
+                if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
+                    ws.Range("D5").Value += 1
+                    ws.Range("D11").Value += 1
+                    ws.Range("C16").Value += 1
+
+                if dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
+                    ws.Range("D6").Value += 1
+                    ws.Range("D10").Value += 1
+                    ws.Range("C16").Value += 1
+
+                if dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
+                    ws.Range("D6").Value += 1
+                    ws.Range("D11").Value += 1
+                    ws.Range("C15").Value += 1
+
             self.progress_bar.setValue(self.progress_bar.value()+1)
         print(count)
         self.progress_bar.setVisible(False)
+
+
 
     def _initialize_progress_bar(self, maximum: int) -> None:
         """
