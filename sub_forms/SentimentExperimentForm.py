@@ -48,7 +48,7 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         """
         dependency_tree = SentenceDependencyTree(self.dictionary)
         count = 0
-        n = 400
+        n = 100
         self._initialize_progress_bar(n)
 
         xl = Dispatch("Excel.Application")
@@ -57,8 +57,8 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
             r'D:\\Projects\\PycharmProjects\\SentimentTextMarkup\\templates\\Шаблон_эксперимент_статистика.xltx')
         ws = wb.Worksheets("Лист1")
         # ws.Range("C5").Value += 1
-        print(self.sentence_markup_file.head(n))
-        for index, row in self.sentence_markup_file.tail(n).iterrows():
+        print(self.sentence_markup_file.info())
+        for index, row in self.sentence_markup_file.head(n).iterrows():
             dependency_tree.generate_tree(row['Sentence'])
             count += 1
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.POSITIVE.value:
@@ -67,48 +67,63 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
                     ws.Range("C5").Value += 1
                     ws.Range("D11").Value += 1
                     ws.Range("D16").Value += 1
+                    ws.Range("B28").Value += 1  # Вторая таблица качества класификации
 
-                if dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
+                elif dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
                     ws.Range("C6").Value += 1
                     ws.Range("D10").Value += 1
                     ws.Range("D16").Value += 1
+                    ws.Range("C28").Value += 1  # Вторая таблица качества класификации
 
-                if dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
+                elif dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
                     ws.Range("C6").Value += 1
                     ws.Range("D11").Value += 1
                     ws.Range("D15").Value += 1
+                    ws.Range("D28").Value += 1  # Вторая таблица качества класификации
+                else:
+                    print(row)
 
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.NEGATIVE.value:
                 if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
                     ws.Range("D5").Value += 1
                     ws.Range("C11").Value += 1
                     ws.Range("D16").Value += 1
+                    ws.Range("B29").Value += 1  # Вторая таблица качества класификации
 
-                if dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
+                elif dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
                     ws.Range("D6").Value += 1
                     ws.Range("C10").Value += 1
                     ws.Range("D16").Value += 1
+                    ws.Range("C29").Value += 1  # Вторая таблица качества класификации
 
-                if dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
+                elif dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
                     ws.Range("D6").Value += 1
                     ws.Range("C11").Value += 1
                     ws.Range("D15").Value += 1
+                    ws.Range("D29").Value += 1  # Вторая таблица качества класификации
+                else:
+                    print(row)
 
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.NEUTRAL.value:
                 if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
                     ws.Range("D5").Value += 1
                     ws.Range("D11").Value += 1
                     ws.Range("C16").Value += 1
+                    ws.Range("B30").Value += 1  # Вторая таблица качества класификации
 
-                if dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
+                elif dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
                     ws.Range("D6").Value += 1
                     ws.Range("D10").Value += 1
                     ws.Range("C16").Value += 1
+                    ws.Range("C30").Value += 1  # Вторая таблица качества класификации
 
-                if dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
+                elif dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
                     ws.Range("D6").Value += 1
                     ws.Range("D11").Value += 1
                     ws.Range("C15").Value += 1
+                    ws.Range("D30").Value += 1  # Вторая таблица качества класификации
+                else:
+                    print(row)
 
             self.progress_bar.setValue(self.progress_bar.value()+1)
         self.progress_bar.setVisible(False)
@@ -134,17 +149,21 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         ws.Range("E23").Value = ws.Range("C15").Value + ws.Range("C16").Value
 
         # Average
-        ws.Range("B24").Value = (ws.Range("C5").Value + ws.Range("C10").Value + ws.Range("C15").Value)/(ws.Range("C5").Value + ws.Range("D5").Value +
-                                                                                                        ws.Range("C10").Value + ws.Range("D10").Value +
-                                                                                                        ws.Range("C15").Value + ws.Range("D15").Value)
-        ws.Range("C24").Value = (ws.Range("C5").Value + ws.Range("C10").Value + ws.Range("C15").Value)/(ws.Range("C5").Value + ws.Range("C6").Value +
-                                                                                                        ws.Range("C10").Value + ws.Range("C11").Value +
-                                                                                                        ws.Range("C15").Value + ws.Range("C16").Value)
-        ws.Range("D24").Value = 2 * (ws.Range("B24").Value * ws.Range("C24").Value)/(ws.Range("B24").Value + ws.Range("C24").Value)
+        # ws.Range("B24").Value = (ws.Range("C5").Value + ws.Range("C10").Value + ws.Range("C15").Value)/(ws.Range("C5").Value + ws.Range("D5").Value +
+        #                                                                                                 ws.Range("C10").Value + ws.Range("D10").Value +
+        #                                                                                                 ws.Range("C15").Value + ws.Range("D15").Value)
+        # ws.Range("C24").Value = (ws.Range("C5").Value + ws.Range("C10").Value + ws.Range("C15").Value)/(ws.Range("C5").Value + ws.Range("C6").Value +
+        #                                                                                                 ws.Range("C10").Value + ws.Range("C11").Value +
+        #                                                                                                 ws.Range("C15").Value + ws.Range("C16").Value)
+        # ws.Range("D24").Value = 2 * (ws.Range("B24").Value * ws.Range("C24").Value)/(ws.Range("B24").Value + ws.Range("C24").Value)
+        # ws.Range("E24").Value = ws.Range("E21").Value + ws.Range("E22").Value + ws.Range("E23").Value
         ws.Range("E24").Value = ws.Range("E21").Value + ws.Range("E22").Value + ws.Range("E23").Value
+        ws.Range("E25").Value = ws.Range("E24").Value
 
         # Качество классификации. Вторая таблица
-        # PSTV
+        ws.Range("E28").Value = ws.Range("B28").Value + ws.Range("C28").Value + ws.Range("D28").Value  # PSTV Всего
+        ws.Range("E29").Value = ws.Range("B29").Value + ws.Range("C29").Value + ws.Range("D29").Value  # NGTV Всего
+        ws.Range("E30").Value = ws.Range("B30").Value + ws.Range("C30").Value + ws.Range("D30").Value  # NEUT Всего
 
     def _initialize_progress_bar(self, maximum: int) -> None:
         """

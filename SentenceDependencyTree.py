@@ -182,7 +182,9 @@ class SentenceDependencyTree:
                     if parent['dependency'] in ['nsubj', 'nsubj:pass',
                                                 'ROOT']:  # Положительный, если определяется подлежащее ROOT????
                         return positive
-                    if parent['dependency'] in ['obj', 'iobj', 'nmod']:  # нейтральный, если определяется дополнение
+                    elif parent['dependency'] in ['obj', 'iobj', 'nmod']:  # нейтральный, если определяется дополнение
+                        return neutral
+                    else:
                         return neutral
                 if parent['sentiment'] == negative:
                     return negative
