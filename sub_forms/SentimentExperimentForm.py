@@ -4,16 +4,22 @@ from SentimentType import SentimentType
 from ui.sentimentExperimentForm import sentimentExperimentForm
 import pandas as pd
 from SentenceDependencyTree import SentenceDependencyTree
+from SentimentType import SentimentType
 from win32com.client import Dispatch
 
 
 def convert_sentiment_tag(tag):
+    """
+    Преобразует метку тональности из файла с предложениями в метку, принятую для использования в приложении
+    :param tag: тональная метка из файла
+    :return: тональная метка принятая для использования в приложении
+    """
     if tag == 'positive':
-        return 'PSTV'
+        return SentimentType.POSITIVE.value
     elif tag == 'negative':
-        return 'NGTV'
+        return SentimentType.NEGATIVE.value
     else:
-        return 'NEUT'
+        return SentimentType.NEUTRAL.value
 
 
 class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm, QtWidgets.QMainWindow):
@@ -27,6 +33,7 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         self.dictionary = dictionary
         self.sentence_markup_file = None  # Путь к файлу с размеченными предложениями
         self.progress_bar = QtWidgets.QProgressBar()
+
         # -----------------------------Привязка методов к кнопкам---------------------------
         self.filePathSelectButton.clicked.connect(self.menu_open)
         self.makeExperimentButton.clicked.connect(self.make_experiment)
@@ -48,9 +55,10 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         """
         dependency_tree = SentenceDependencyTree(self.dictionary)
         count = 0
-        n = 100
+        #n = len(self.sentence_markup_file)
+        n = 1000
         self._initialize_progress_bar(n)
-
+        false_positive = []
         xl = Dispatch("Excel.Application")
         xl.Visible = True
         wb = xl.Workbooks.Open(
@@ -59,8 +67,11 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         # ws.Range("C5").Value += 1
         print(self.sentence_markup_file.info())
         for index, row in self.sentence_markup_file.head(n).iterrows():
-            dependency_tree.generate_tree(row['Sentence'])
+            sentence = row['Sentence'].replace('"', ' ')  # Предобработка
+            dependency_tree.generate_tree(sentence)
             count += 1
+            if count % 500 == 0:
+                print(count)
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.POSITIVE.value:
                 # Таблицы контингентности
                 if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
@@ -89,6 +100,7 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
                     ws.Range("C11").Value += 1
                     ws.Range("D16").Value += 1
                     ws.Range("B29").Value += 1  # Вторая таблица качества класификации
+                    false_positive.append('\"'+sentence+'\"'+f", {row['Sentiment']}")
 
                 elif dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
                     ws.Range("D6").Value += 1
@@ -110,6 +122,7 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
                     ws.Range("D11").Value += 1
                     ws.Range("C16").Value += 1
                     ws.Range("B30").Value += 1  # Вторая таблица качества класификации
+                    #false_positive.append('\"' + sentence + '\"' + f", {row['Sentiment']}")
 
                 elif dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
                     ws.Range("D6").Value += 1
@@ -125,38 +138,37 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
                 else:
                     print(row)
 
-            self.progress_bar.setValue(self.progress_bar.value()+1)
+            self.progress_bar.setValue(self.progress_bar.value() + 1)
         self.progress_bar.setVisible(False)
-        print(count)
+
 
         # Качество классификации. Первая таблица
         # PSTV
-        ws.Range("B21").Value = ws.Range("C5").Value/(ws.Range("C5").Value + ws.Range("D5").Value)
-        ws.Range("C21").Value = ws.Range("C5").Value/(ws.Range("C5").Value + ws.Range("C6").Value)
-        ws.Range("D21").Value = 2 * (ws.Range("B21").Value * ws.Range("C21").Value)/(ws.Range("B21").Value + ws.Range("C21").Value)
+        ws.Range("B21").Value = ws.Range("C5").Value / (ws.Range("C5").Value + ws.Range("D5").Value)
+        ws.Range("C21").Value = ws.Range("C5").Value / (ws.Range("C5").Value + ws.Range("C6").Value)
+        ws.Range("D21").Value = 2 * (ws.Range("B21").Value * ws.Range("C21").Value) / (
+                    ws.Range("B21").Value + ws.Range("C21").Value)
         ws.Range("E21").Value = ws.Range("C5").Value + ws.Range("C6").Value
 
         # NGTV
-        ws.Range("B22").Value = ws.Range("C10").Value/(ws.Range("C10").Value + ws.Range("D10").Value)
-        ws.Range("C22").Value = ws.Range("C10").Value/(ws.Range("C10").Value + ws.Range("C11").Value)
-        ws.Range("D22").Value = 2 * (ws.Range("B22").Value * ws.Range("C22").Value)/(ws.Range("B22").Value + ws.Range("C22").Value)
+        ws.Range("B22").Value = ws.Range("C10").Value / (ws.Range("C10").Value + ws.Range("D10").Value)
+        ws.Range("C22").Value = ws.Range("C10").Value / (ws.Range("C10").Value + ws.Range("C11").Value)
+        ws.Range("D22").Value = 2 * (ws.Range("B22").Value * ws.Range("C22").Value) / (
+                    ws.Range("B22").Value + ws.Range("C22").Value)
         ws.Range("E22").Value = ws.Range("C10").Value + ws.Range("C11").Value
 
         # NEUT
-        ws.Range("B23").Value = ws.Range("C15").Value/(ws.Range("C15").Value + ws.Range("D15").Value)
-        ws.Range("C23").Value = ws.Range("C15").Value/(ws.Range("C15").Value + ws.Range("C16").Value)
-        ws.Range("D23").Value = 2 * (ws.Range("B23").Value * ws.Range("C23").Value)/(ws.Range("B23").Value + ws.Range("C23").Value)
+        ws.Range("B23").Value = ws.Range("C15").Value / (ws.Range("C15").Value + ws.Range("D15").Value)
+        ws.Range("C23").Value = ws.Range("C15").Value / (ws.Range("C15").Value + ws.Range("C16").Value)
+        ws.Range("D23").Value = 2 * (ws.Range("B23").Value * ws.Range("C23").Value) / (
+                    ws.Range("B23").Value + ws.Range("C23").Value)
         ws.Range("E23").Value = ws.Range("C15").Value + ws.Range("C16").Value
 
         # Average
-        # ws.Range("B24").Value = (ws.Range("C5").Value + ws.Range("C10").Value + ws.Range("C15").Value)/(ws.Range("C5").Value + ws.Range("D5").Value +
-        #                                                                                                 ws.Range("C10").Value + ws.Range("D10").Value +
-        #                                                                                                 ws.Range("C15").Value + ws.Range("D15").Value)
-        # ws.Range("C24").Value = (ws.Range("C5").Value + ws.Range("C10").Value + ws.Range("C15").Value)/(ws.Range("C5").Value + ws.Range("C6").Value +
-        #                                                                                                 ws.Range("C10").Value + ws.Range("C11").Value +
-        #                                                                                                 ws.Range("C15").Value + ws.Range("C16").Value)
-        # ws.Range("D24").Value = 2 * (ws.Range("B24").Value * ws.Range("C24").Value)/(ws.Range("B24").Value + ws.Range("C24").Value)
-        # ws.Range("E24").Value = ws.Range("E21").Value + ws.Range("E22").Value + ws.Range("E23").Value
+        ws.Range("B24").Value = (ws.Range("B21").Value + ws.Range("B22").Value + ws.Range("B23").Value) / 3
+        ws.Range("C24").Value = (ws.Range("C21").Value + ws.Range("C22").Value + ws.Range("C23").Value) / 3
+        ws.Range("D24").Value = (ws.Range("D21").Value + ws.Range("D22").Value + ws.Range("D23").Value) / 3
+
         ws.Range("E24").Value = ws.Range("E21").Value + ws.Range("E22").Value + ws.Range("E23").Value
         ws.Range("E25").Value = ws.Range("E24").Value
 
@@ -164,6 +176,12 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         ws.Range("E28").Value = ws.Range("B28").Value + ws.Range("C28").Value + ws.Range("D28").Value  # PSTV Всего
         ws.Range("E29").Value = ws.Range("B29").Value + ws.Range("C29").Value + ws.Range("D29").Value  # NGTV Всего
         ws.Range("E30").Value = ws.Range("B30").Value + ws.Range("C30").Value + ws.Range("D30").Value  # NEUT Всего
+
+       # self.dictionary.save_unknown_words()
+
+        with open('false_positive.txt', 'w', encoding='utf-8') as file:
+            for row in false_positive:
+                file.write(row+'\n')
 
     def _initialize_progress_bar(self, maximum: int) -> None:
         """

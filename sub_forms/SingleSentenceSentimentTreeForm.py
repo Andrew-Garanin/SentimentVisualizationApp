@@ -1,3 +1,5 @@
+import PySide2
+
 from ui.singleSentenceSentimentTreeForm import singleSentenceSentimentTreeForm
 
 from PySide2 import QtWidgets, QtGui
@@ -14,8 +16,10 @@ class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_singleS
         # -----------------------------Привязка методов к кнопкам---------------------------
         self.generateTreeButton.clicked.connect(self.generate_tree)
         self.clearButton.clicked.connect(self.clear)
+        self.unknownWordsButton.clicked.connect(self.showUnknownWords)
 
     def generate_tree(self):
+        self.dictionary.clear_unknown_words()
         text = self.textEditSentense.toPlainText()
         dependency_tree = SentenceDependencyTree(self.dictionary)
         dependency_tree.generate_tree(text)
@@ -35,8 +39,16 @@ class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_singleS
         self.foundRulesListWidget.addItems(dependency_tree.found_rules)
         self.labelFinalSentiment.setText(f"Итоговая тональность: {dependency_tree.sentence_sentiment}")
 
+    def showUnknownWords(self):
+        self.dictionary.show_unknown_words()
+
     def clear(self):
         self.labelFinalSentiment.setText('') # Итоговая тональность:
         self.textEditSentense.setText('')
         self.graphicsViewFirstTree.setScene(None)
         self.graphicsViewSecondTree.setScene(None)
+        self.foundRulesListWidget.clear()
+        self.dictionary.clear_unknown_words()
+
+    def closeEvent(self, event):
+        self.dictionary.clear_unknown_words()

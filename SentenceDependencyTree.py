@@ -1,5 +1,6 @@
 from collections import Counter
 import json
+from SentimentType import SentimentType
 
 
 def get_sentiment_type(dependency: str) -> str:
@@ -77,11 +78,11 @@ class SentenceDependencyTree:
                     continue
                 self._create_node(parents_children, child.i, child.head.i,
                                   child.text, child.dep_, child.pos_, child.lemma_,
-                                  self.dictionary.get_word_tag(child.lemma_))
+                                  self.dictionary.get_word_tag(child))
             else:
                 i = self._create_node(parents_children, child.i, child.head.i,
                                       child.text, child.dep_, child.pos_, child.lemma_,
-                                      self.dictionary.get_word_tag(child.lemma_))
+                                      self.dictionary.get_word_tag(child))
                 self._create_tree(child.children, parents_children[i]['children'])
 
     def generate_tree(self, text):
@@ -91,7 +92,6 @@ class SentenceDependencyTree:
         """
         self.refresh_data()
         doc = self.dictionary.nlp(text)
-
         self.sentiment_by_dictionary = dict()
         self.sentiment_by_dictionary['text'] = doc.text
 
@@ -105,7 +105,7 @@ class SentenceDependencyTree:
         self.sentiment_by_dictionary['tokens']['dependency'] = root.dep_
         self.sentiment_by_dictionary['tokens']['pos'] = root.pos_
         self.sentiment_by_dictionary['tokens']['lemma'] = root.lemma_
-        self.sentiment_by_dictionary['tokens']['sentiment'] = self.dictionary.get_word_tag(root.lemma_)
+        self.sentiment_by_dictionary['tokens']['sentiment'] = self.dictionary.get_word_tag(root)
         self.sentiment_by_dictionary['tokens']['children'] = []
 
         self._create_tree(root.children, self.sentiment_by_dictionary['tokens']['children'])
@@ -131,8 +131,25 @@ class SentenceDependencyTree:
                 #     f"{element['text']} {parent['text']} | ПРАВИЛО: {self.get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}",
                 #     'green'))
             else:
-                dep_array.append(element['sentiment'])
+                if element['dependency'] == 'ROOT':
+                    dep_array.append(element['sentiment'])
+                elif parent['sentiment'] == element['sentiment']:
+                    dep_array.append(element['sentiment'])
+                elif parent['sentiment'] == SentimentType.NEGATIVE.value and element['sentiment'] == SentimentType.POSITIVE.value:
+                    dep_array.append(SentimentType.NEUTRAL.value)
+                elif element['sentiment'] == SentimentType.NEGATIVE.value and parent['sentiment'] == SentimentType.POSITIVE.value:
+                    dep_array.append(SentimentType.NEUTRAL.value)
+                elif parent['sentiment'] == SentimentType.POSITIVE.value and element['sentiment'] == SentimentType.NEUTRAL.value:
+                    dep_array.append(SentimentType.POSITIVE.value)
+                elif element['sentiment'] == SentimentType.POSITIVE.value and parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    dep_array.append(SentimentType.POSITIVE.value)
+                elif parent['sentiment'] == SentimentType.NEGATIVE.value and element['sentiment'] == SentimentType.NEUTRAL.value:
+                    dep_array.append(SentimentType.NEGATIVE.value)
+                elif element['sentiment'] == SentimentType.NEGATIVE.value and parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    dep_array.append(SentimentType.NEGATIVE.value)
+
         parent['sentiment'] = self.calculate_node_sentiment_recoloring(dep_array)
+        print(dep_array)
         return parent
 
     def calculate_sentiment_by_rules(self, parent, child):
@@ -239,6 +256,13 @@ class SentenceDependencyTree:
                     return neutral
 
         if child['dependency'] in ['obl', 'obl:agent', 'advmod']:  # Действие - обстоятельство advmod ???
+            if child['dependency'] == 'advmod' and child['text'] == 'не':
+                if parent['sentiment'] == positive:
+                    return negative
+                if parent['sentiment'] == negative:
+                    return positive
+                if parent['sentiment'] == neutral:
+                    return negative
             if child['sentiment'] == negative:
                 if parent['sentiment'] == positive:
                     return negative

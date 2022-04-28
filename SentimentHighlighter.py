@@ -32,8 +32,8 @@ class Highlighter:
             idx = 0
             text_array = self.dictionary.nlp(text)
             for word in text_array:
-                lemma = word.lemma_
-                tag = self.dictionary.get_word_tag(lemma)
+                #lemma = word.lemma_
+                tag = self.dictionary.get_word_tag(word)
                 if tag == rule.sentiment_type:
                     length = len(word)
 

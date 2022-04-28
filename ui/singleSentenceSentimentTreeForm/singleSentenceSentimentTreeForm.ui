@@ -49,6 +49,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::Panel</enum>
               </property>
@@ -56,7 +62,7 @@
                <enum>QFrame::Raised</enum>
               </property>
               <layout class="QGridLayout" name="gridLayout_8">
-               <item row="2" column="0">
+               <item row="3" column="0">
                 <spacer name="verticalSpacer">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -65,6 +71,19 @@
                   <size>
                    <width>20</width>
                    <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="4" column="0">
+                <spacer name="horizontalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>148</width>
+                   <height>20</height>
                   </size>
                  </property>
                 </spacer>
@@ -95,18 +114,18 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
-                <spacer name="horizontalSpacer_5">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
+               <item row="2" column="0">
+                <widget class="QPushButton" name="unknownWordsButton">
+                 <property name="minimumSize">
                   <size>
-                   <width>148</width>
-                   <height>20</height>
+                   <width>0</width>
+                   <height>35</height>
                   </size>
                  </property>
-                </spacer>
+                 <property name="text">
+                  <string>Неизвестные слова</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -130,7 +149,7 @@
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <widget class="QWidget" name="">
+                <widget class="QWidget" name="layoutWidget">
                  <layout class="QGridLayout" name="gridLayout_2">
                   <item row="0" column="0">
                    <widget class="QLabel" name="labelEnterSentence">
@@ -162,7 +181,7 @@
                   </item>
                  </layout>
                 </widget>
-                <widget class="QWidget" name="">
+                <widget class="QWidget" name="layoutWidget">
                  <layout class="QGridLayout" name="gridLayout_5">
                   <item row="0" column="1">
                    <spacer name="horizontalSpacer_2">
@@ -207,7 +226,7 @@
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <widget class="QWidget" name="">
+                <widget class="QWidget" name="layoutWidget">
                  <layout class="QGridLayout" name="gridLayout_3">
                   <item row="0" column="0">
                    <widget class="QLabel" name="labelFirstTree">
@@ -246,7 +265,7 @@
                   </item>
                  </layout>
                 </widget>
-                <widget class="QWidget" name="">
+                <widget class="QWidget" name="layoutWidget">
                  <layout class="QGridLayout" name="gridLayout_4">
                   <item row="0" column="0">
                    <widget class="QLabel" name="labelSecondTree">

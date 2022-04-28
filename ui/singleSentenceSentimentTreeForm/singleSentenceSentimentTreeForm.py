@@ -44,13 +44,18 @@ class Ui_singleSentenceSentimentTreeForm(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
         self.frame_2.setSizePolicy(sizePolicy)
+        self.frame_2.setMinimumSize(QSize(0, 35))
         self.frame_2.setFrameShape(QFrame.Panel)
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.gridLayout_8 = QGridLayout(self.frame_2)
         self.gridLayout_8.setObjectName(u"gridLayout_8")
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.gridLayout_8.addItem(self.verticalSpacer, 2, 0, 1, 1)
+        self.gridLayout_8.addItem(self.verticalSpacer, 3, 0, 1, 1)
+
+        self.horizontalSpacer_5 = QSpacerItem(148, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout_8.addItem(self.horizontalSpacer_5, 4, 0, 1, 1)
 
         self.generateTreeButton = QPushButton(self.frame_2)
         self.generateTreeButton.setObjectName(u"generateTreeButton")
@@ -64,9 +69,11 @@ class Ui_singleSentenceSentimentTreeForm(object):
 
         self.gridLayout_8.addWidget(self.clearButton, 1, 0, 1, 1)
 
-        self.horizontalSpacer_5 = QSpacerItem(148, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.unknownWordsButton = QPushButton(self.frame_2)
+        self.unknownWordsButton.setObjectName(u"unknownWordsButton")
+        self.unknownWordsButton.setMinimumSize(QSize(0, 35))
 
-        self.gridLayout_8.addItem(self.horizontalSpacer_5, 3, 0, 1, 1)
+        self.gridLayout_8.addWidget(self.unknownWordsButton, 2, 0, 1, 1)
 
 
         self.gridLayout_9.addWidget(self.frame_2, 1, 1, 1, 1)
@@ -82,12 +89,12 @@ class Ui_singleSentenceSentimentTreeForm(object):
         self.splitter.setSizePolicy(sizePolicy1)
         self.splitter.setMaximumSize(QSize(16777215, 16777215))
         self.splitter.setOrientation(Qt.Horizontal)
-        self.widget = QWidget(self.splitter)
-        self.widget.setObjectName(u"widget")
-        self.gridLayout_2 = QGridLayout(self.widget)
+        self.layoutWidget = QWidget(self.splitter)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.gridLayout_2 = QGridLayout(self.layoutWidget)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.labelEnterSentence = QLabel(self.widget)
+        self.labelEnterSentence = QLabel(self.layoutWidget)
         self.labelEnterSentence.setObjectName(u"labelEnterSentence")
         font = QFont()
         font.setPointSize(8)
@@ -95,7 +102,7 @@ class Ui_singleSentenceSentimentTreeForm(object):
 
         self.gridLayout_2.addWidget(self.labelEnterSentence, 0, 0, 1, 1)
 
-        self.textEditSentense = QTextEdit(self.widget)
+        self.textEditSentense = QTextEdit(self.layoutWidget)
         self.textEditSentense.setObjectName(u"textEditSentense")
 
         self.gridLayout_2.addWidget(self.textEditSentense, 1, 0, 1, 2)
@@ -104,28 +111,28 @@ class Ui_singleSentenceSentimentTreeForm(object):
 
         self.gridLayout_2.addItem(self.horizontalSpacer, 0, 1, 1, 1)
 
-        self.splitter.addWidget(self.widget)
-        self.widget1 = QWidget(self.splitter)
-        self.widget1.setObjectName(u"widget1")
-        self.gridLayout_5 = QGridLayout(self.widget1)
+        self.splitter.addWidget(self.layoutWidget)
+        self.layoutWidget1 = QWidget(self.splitter)
+        self.layoutWidget1.setObjectName(u"layoutWidget1")
+        self.gridLayout_5 = QGridLayout(self.layoutWidget1)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
         self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
         self.horizontalSpacer_2 = QSpacerItem(268, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.gridLayout_5.addItem(self.horizontalSpacer_2, 0, 1, 1, 1)
 
-        self.labelEnterSentence_2 = QLabel(self.widget1)
+        self.labelEnterSentence_2 = QLabel(self.layoutWidget1)
         self.labelEnterSentence_2.setObjectName(u"labelEnterSentence_2")
         self.labelEnterSentence_2.setFont(font)
 
         self.gridLayout_5.addWidget(self.labelEnterSentence_2, 0, 0, 1, 1)
 
-        self.foundRulesListWidget = QListWidget(self.widget1)
+        self.foundRulesListWidget = QListWidget(self.layoutWidget1)
         self.foundRulesListWidget.setObjectName(u"foundRulesListWidget")
 
         self.gridLayout_5.addWidget(self.foundRulesListWidget, 1, 0, 1, 2)
 
-        self.splitter.addWidget(self.widget1)
+        self.splitter.addWidget(self.layoutWidget1)
 
         self.verticalLayout_7.addWidget(self.splitter)
 
@@ -137,12 +144,12 @@ class Ui_singleSentenceSentimentTreeForm(object):
         sizePolicy2.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
         self.splitter_2.setSizePolicy(sizePolicy2)
         self.splitter_2.setOrientation(Qt.Horizontal)
-        self.widget2 = QWidget(self.splitter_2)
-        self.widget2.setObjectName(u"widget2")
-        self.gridLayout_3 = QGridLayout(self.widget2)
+        self.layoutWidget2 = QWidget(self.splitter_2)
+        self.layoutWidget2.setObjectName(u"layoutWidget2")
+        self.gridLayout_3 = QGridLayout(self.layoutWidget2)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.labelFirstTree = QLabel(self.widget2)
+        self.labelFirstTree = QLabel(self.layoutWidget2)
         self.labelFirstTree.setObjectName(u"labelFirstTree")
         font1 = QFont()
         font1.setPointSize(10)
@@ -151,7 +158,7 @@ class Ui_singleSentenceSentimentTreeForm(object):
 
         self.gridLayout_3.addWidget(self.labelFirstTree, 0, 0, 1, 1)
 
-        self.graphicsViewFirstTree = QGraphicsView(self.widget2)
+        self.graphicsViewFirstTree = QGraphicsView(self.layoutWidget2)
         self.graphicsViewFirstTree.setObjectName(u"graphicsViewFirstTree")
         self.graphicsViewFirstTree.setDragMode(QGraphicsView.ScrollHandDrag)
 
@@ -161,13 +168,13 @@ class Ui_singleSentenceSentimentTreeForm(object):
 
         self.gridLayout_3.addItem(self.horizontalSpacer_3, 0, 1, 1, 1)
 
-        self.splitter_2.addWidget(self.widget2)
-        self.widget3 = QWidget(self.splitter_2)
-        self.widget3.setObjectName(u"widget3")
-        self.gridLayout_4 = QGridLayout(self.widget3)
+        self.splitter_2.addWidget(self.layoutWidget2)
+        self.layoutWidget3 = QWidget(self.splitter_2)
+        self.layoutWidget3.setObjectName(u"layoutWidget3")
+        self.gridLayout_4 = QGridLayout(self.layoutWidget3)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.labelSecondTree = QLabel(self.widget3)
+        self.labelSecondTree = QLabel(self.layoutWidget3)
         self.labelSecondTree.setObjectName(u"labelSecondTree")
         self.labelSecondTree.setFont(font1)
 
@@ -177,13 +184,13 @@ class Ui_singleSentenceSentimentTreeForm(object):
 
         self.gridLayout_4.addItem(self.horizontalSpacer_4, 0, 1, 1, 1)
 
-        self.graphicsViewSecondTree = QGraphicsView(self.widget3)
+        self.graphicsViewSecondTree = QGraphicsView(self.layoutWidget3)
         self.graphicsViewSecondTree.setObjectName(u"graphicsViewSecondTree")
         self.graphicsViewSecondTree.setDragMode(QGraphicsView.ScrollHandDrag)
 
         self.gridLayout_4.addWidget(self.graphicsViewSecondTree, 1, 0, 1, 2)
 
-        self.splitter_2.addWidget(self.widget3)
+        self.splitter_2.addWidget(self.layoutWidget3)
 
         self.verticalLayout_7.addWidget(self.splitter_2)
 
@@ -224,6 +231,7 @@ class Ui_singleSentenceSentimentTreeForm(object):
         singleSentenceSentimentTreeForm.setWindowTitle(QCoreApplication.translate("singleSentenceSentimentTreeForm", u"\u0414\u0435\u0440\u0435\u0432\u043e \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438 \u043e\u0434\u0438\u043d\u043e\u0447\u043d\u043e\u0433\u043e \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u044f", None))
         self.generateTreeButton.setText(QCoreApplication.translate("singleSentenceSentimentTreeForm", u"\u041f\u043e\u0441\u0442\u0440\u043e\u0438\u0442\u044c \u0434\u0435\u0440\u0435\u0432\u043e", None))
         self.clearButton.setText(QCoreApplication.translate("singleSentenceSentimentTreeForm", u"\u041e\u0447\u0438\u0441\u0442\u0438\u0442\u044c", None))
+        self.unknownWordsButton.setText(QCoreApplication.translate("singleSentenceSentimentTreeForm", u"\u041d\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043d\u044b\u0435 \u0441\u043b\u043e\u0432\u0430", None))
         self.labelEnterSentence.setText(QCoreApplication.translate("singleSentenceSentimentTreeForm", u"<html><head/><body><p><span style=\" font-size:10pt;\">\u041f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0435:</span></p></body></html>", None))
         self.labelEnterSentence_2.setText(QCoreApplication.translate("singleSentenceSentimentTreeForm", u"<html><head/><body><p><span style=\" font-size:10pt;\">\u041d\u0430\u0439\u0434\u0435\u043d\u043d\u044b\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u0430 \u0432\u044b\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438:</span></p></body></html>", None))
         self.labelFirstTree.setText(QCoreApplication.translate("singleSentenceSentimentTreeForm", u"\u0422\u043e\u043d\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0441\u043b\u043e\u0432 \u043f\u043e \u0441\u043b\u043e\u0432\u0430\u0440\u044e", None))
