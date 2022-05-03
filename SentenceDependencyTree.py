@@ -1,6 +1,8 @@
 from collections import Counter
 import json
 from SentimentType import SentimentType
+import autoit
+import spacy
 
 
 def get_sentiment_type(dependency: str) -> str:
@@ -36,12 +38,15 @@ class SentenceDependencyTree:
         self.sentiment_by_rules = None  # Дерево зависимостей с тональностью слов, определенной по правилам
         self.sentence_sentiment = None  # Итоговая тональность предложения TODO: поменять на метод get_sentence_sentiment
         self.found_rules = []  # Найденные в предложении правила
+        self.unknown_words = []  # Неизвестные слова
+        self.nlp = spacy.load("ru_core_news_lg")
 
     def refresh_data(self) -> None:
         """
         Сбрасывает информацию по предложению.
         """
         self.found_rules = []
+        self.unknown_words = []
         self.sentiment_by_dictionary = None
         self.sentiment_by_rules = None
         self.sentence_sentiment = None
@@ -76,10 +81,14 @@ class SentenceDependencyTree:
             if not [child_ for child_ in child.children]:
                 if child.is_punct:
                     continue
+                if not self.dictionary.is_word_exist(child.lemma_):
+                    self.unknown_words.append(child.lemma_)
                 self._create_node(parents_children, child.i, child.head.i,
                                   child.text, child.dep_, child.pos_, child.lemma_,
                                   self.dictionary.get_word_tag(child))
             else:
+                if not self.dictionary.is_word_exist(child.lemma_):
+                    self.unknown_words.append(child.lemma_)
                 i = self._create_node(parents_children, child.i, child.head.i,
                                       child.text, child.dep_, child.pos_, child.lemma_,
                                       self.dictionary.get_word_tag(child))
@@ -91,14 +100,15 @@ class SentenceDependencyTree:
         :param text: исходный текст предложения
         """
         self.refresh_data()
-        doc = self.dictionary.nlp(text)
+        doc = self.nlp(text)
         self.sentiment_by_dictionary = dict()
         self.sentiment_by_dictionary['text'] = doc.text
 
         root = None
         for sent in doc.sents:
             root = sent.root
-
+        if not self.dictionary.is_word_exist(root.lemma_):
+            self.unknown_words.append(root.lemma_)
         self.sentiment_by_dictionary['tokens'] = dict()
         self.sentiment_by_dictionary['tokens']['id'] = root.i
         self.sentiment_by_dictionary['tokens']['text'] = root.text
@@ -112,11 +122,29 @@ class SentenceDependencyTree:
 
         self.sentiment_by_rules = json.loads(json.dumps(self.sentiment_by_dictionary.copy()))
 
-        aboba = self.search_dep([self.sentiment_by_rules['tokens']], dict({'id': -1}))  # Поиск правил
+        aboba = self.search_dep([self.sentiment_by_rules['tokens']], dict({'id': -1, 'children': [root]}))  # Поиск правил
+
         # print(json.dumps(self.sentiment_by_dictionary, ensure_ascii=False, indent=4))
         # print(json.dumps(self.sentiment_by_rules, ensure_ascii=False, indent=4))
 
         self.sentence_sentiment = aboba['sentiment']
+
+    def is_parent_has_main_dep(self, parent) -> bool:
+        for child in parent['children']:
+            if child['dependency'] in self.main_dep:
+                return True
+        return False
+
+    def show_unknown_words(self) -> None:
+        """
+        Открывает блокнот и записывает в него неизвестные слова конкретного предложения.
+        """
+        self.unknown_words = list(set(self.unknown_words))  # only unique
+
+        autoit.run("notepad.exe")
+        autoit.win_wait_active("[CLASS:Notepad]", 3)
+        for element in self.unknown_words:
+            autoit.control_send("[CLASS:Notepad]", "Edit1", element + "\n")
 
     def search_dep(self, json_tree: list[dict], parent):
         dep_array = []
@@ -127,10 +155,8 @@ class SentenceDependencyTree:
                 dep_array.append(self.calculate_sentiment_by_rules(parent, element))
                 self.found_rules.append(
                     f"{element['text']} {parent['text']} | ПРАВИЛО: {get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}")
-                # print(colored(
-                #     f"{element['text']} {parent['text']} | ПРАВИЛО: {self.get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}",
-                #     'green'))
-            else:
+
+            elif (len(parent['children']) == 1) or (len(parent['children']) > 1 and element['sentiment'] != SentimentType.NEUTRAL.value) or not self.is_parent_has_main_dep(parent):
                 if element['dependency'] == 'ROOT':
                     dep_array.append(element['sentiment'])
                 elif parent['sentiment'] == element['sentiment']:
@@ -147,6 +173,8 @@ class SentenceDependencyTree:
                     dep_array.append(SentimentType.NEGATIVE.value)
                 elif element['sentiment'] == SentimentType.NEGATIVE.value and parent['sentiment'] == SentimentType.NEUTRAL.value:
                     dep_array.append(SentimentType.NEGATIVE.value)
+            elif len(parent['children']) > 1 and element['sentiment'] == SentimentType.NEUTRAL.value:
+                continue
 
         parent['sentiment'] = self.calculate_node_sentiment_recoloring(dep_array)
         print(dep_array)
@@ -256,13 +284,13 @@ class SentenceDependencyTree:
                     return neutral
 
         if child['dependency'] in ['obl', 'obl:agent', 'advmod']:  # Действие - обстоятельство advmod ???
-            if child['dependency'] == 'advmod' and child['text'] == 'не':
+            if child['dependency'] == 'advmod' and child['text'].lower() == 'не':
                 if parent['sentiment'] == positive:
                     return negative
                 if parent['sentiment'] == negative:
                     return positive
                 if parent['sentiment'] == neutral:
-                    return negative
+                    return neutral
             if child['sentiment'] == negative:
                 if parent['sentiment'] == positive:
                     return negative

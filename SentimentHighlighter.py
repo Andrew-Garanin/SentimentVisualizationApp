@@ -1,14 +1,16 @@
 from PySide2.QtGui import *
 from PySide2.QtCore import *
+import spacy
 
 
-class Highlighter:
+class SentimentHighlighter:
     def __init__(self, document, cursor, text_field, dictionary):
         self.dictionary = dictionary
         self.document = document
         self.highlightingRules = []
         self.cursor = cursor
         self.text_field = text_field
+        self.nlp = spacy.load("ru_core_news_lg")
 
         # PSTV
         brush = QBrush(Qt.darkGreen, Qt.SolidPattern)
@@ -30,9 +32,8 @@ class Highlighter:
         text = self.document.toPlainText()
         for rule in self.highlightingRules:
             idx = 0
-            text_array = self.dictionary.nlp(text)
+            text_array = self.nlp(text)
             for word in text_array:
-                #lemma = word.lemma_
                 tag = self.dictionary.get_word_tag(word)
                 if tag == rule.sentiment_type:
                     length = len(word)

@@ -6,7 +6,7 @@ from PySide2.QtGui import QTextCursor, QCursor
 from PySide2.QtWidgets import QMenu
 from bs4 import BeautifulSoup
 
-from SentimentHighlighter import Highlighter
+from SentimentHighlighter import SentimentHighlighter
 
 
 class SentimentTextMarkupForm(sentimentTextMarkupForm.Ui_sentimentTextMarkupForm, QtWidgets.QMainWindow):
@@ -14,8 +14,8 @@ class SentimentTextMarkupForm(sentimentTextMarkupForm.Ui_sentimentTextMarkupForm
         super(SentimentTextMarkupForm, self).__init__()
         self.setupUi(self)
         self.dictionary = dictionary
-        self.highlighter = Highlighter(self.textField.document(), QTextCursor(self.textField.document()),
-                                       self.textField, self.dictionary)
+        self.highlighter = SentimentHighlighter(self.textField.document(), QTextCursor(self.textField.document()),
+                                                self.textField, self.dictionary)
 
         # -----------------------------Привязка методов к кнопкам---------------------------
         self.menuOpen.triggered.connect(self.menu_open)
