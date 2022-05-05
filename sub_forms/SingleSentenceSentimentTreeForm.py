@@ -23,22 +23,22 @@ class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_singleS
         self.foundRulesListWidget.clear()
         text = self.textEditSentense.toPlainText()
         #self.dependency_tree = SentenceDependencyTree(self.dictionary)
-        self.dependency_tree.generate_tree(text)
+        self.dependency_tree.build_trees(text)
 
-        graph1 = TreeGraph([self.dependency_tree.sentiment_by_dictionary['tokens']])
+        graph1 = TreeGraph(self.dependency_tree.sentiment_by_dictionary['tokens'])
         scene1 = QGraphicsScene()
         scene1.addPixmap(graph1.render_image())
         self.graphicsViewFirstTree.setScene(scene1)
         graph1.clear_files()
 
-        graph2 = TreeGraph([self.dependency_tree.sentiment_by_rules['tokens']])
+        graph2 = TreeGraph(self.dependency_tree.sentiment_by_rules['tokens'])
         scene2 = QGraphicsScene()
         scene2.addPixmap(graph2.render_image())
         self.graphicsViewSecondTree.setScene(scene2)
         graph2.clear_files()
 
         self.foundRulesListWidget.addItems(self.dependency_tree.found_rules)
-        self.labelFinalSentiment.setText(f"Итоговая тональность: {self.dependency_tree.sentence_sentiment}")
+        self.labelFinalSentiment.setText(f"Итоговая тональность: {self.dependency_tree.get_sentence_sentiment()}")
 
     def showUnknownWords(self):
         self.dependency_tree.show_unknown_words()

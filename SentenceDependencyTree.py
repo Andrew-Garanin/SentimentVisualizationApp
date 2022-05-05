@@ -36,10 +36,12 @@ class SentenceDependencyTree:
                          'advmod']  # Зависимости пар слов, за которыми следим
         self.sentiment_by_dictionary = None  # Дерево зависимостей с тональностью слов, определенной по тональному словарю
         self.sentiment_by_rules = None  # Дерево зависимостей с тональностью слов, определенной по правилам
-        self.sentence_sentiment = None  # Итоговая тональность предложения TODO: поменять на метод get_sentence_sentiment
         self.found_rules = []  # Найденные в предложении правила
         self.unknown_words = []  # Неизвестные слова
         self.nlp = spacy.load("ru_core_news_lg")
+
+    def get_sentence_sentiment(self):
+        return self.sentiment_by_rules['tokens'][0]['sentiment']
 
     def refresh_data(self) -> None:
         """
@@ -49,7 +51,6 @@ class SentenceDependencyTree:
         self.unknown_words = []
         self.sentiment_by_dictionary = None
         self.sentiment_by_rules = None
-        self.sentence_sentiment = None
 
     def _create_node(self, parents_children: [], id: int, parent_id: int, text: str,
                      dependency: str, pos: str, lemma: str, sentiment: str) -> int:
@@ -94,40 +95,33 @@ class SentenceDependencyTree:
                                       self.dictionary.get_word_tag(child))
                 self._create_tree(child.children, parents_children[i]['children'])
 
-    def generate_tree(self, text):
+    def build_trees(self, text):
         """
-        Создаёт два дерева: на основе тонального словаря и на основе правил, а так же делает вывод о тональности всего предложения
+        Создаёт два дерева: на основе тонального словаря и на основе правил
         :param text: исходный текст предложения
         """
         self.refresh_data()
         doc = self.nlp(text)
         self.sentiment_by_dictionary = dict()
         self.sentiment_by_dictionary['text'] = doc.text
+        self.sentiment_by_dictionary['tokens'] = []
 
         root = None
-        for sent in doc.sents:
-            root = sent.root
+        for sentence in doc.sents:
+            root = sentence.root
+
         if not self.dictionary.is_word_exist(root.lemma_):
             self.unknown_words.append(root.lemma_)
-        self.sentiment_by_dictionary['tokens'] = dict()
-        self.sentiment_by_dictionary['tokens']['id'] = root.i
-        self.sentiment_by_dictionary['tokens']['text'] = root.text
-        self.sentiment_by_dictionary['tokens']['dependency'] = root.dep_
-        self.sentiment_by_dictionary['tokens']['pos'] = root.pos_
-        self.sentiment_by_dictionary['tokens']['lemma'] = root.lemma_
-        self.sentiment_by_dictionary['tokens']['sentiment'] = self.dictionary.get_word_tag(root)
-        self.sentiment_by_dictionary['tokens']['children'] = []
 
-        self._create_tree(root.children, self.sentiment_by_dictionary['tokens']['children'])
+        self._create_node(self.sentiment_by_dictionary['tokens'], root.i, -1, root.text, root.dep_, root.pos_,
+                          root.lemma_, self.dictionary.get_word_tag(root))  # Корень дерева
 
-        self.sentiment_by_rules = json.loads(json.dumps(self.sentiment_by_dictionary.copy()))
-
-        aboba = self.search_dep([self.sentiment_by_rules['tokens']], dict({'id': -1, 'children': [root]}))  # Поиск правил
+        self._create_tree(root.children, self.sentiment_by_dictionary['tokens'][0]['children'])
+        self.sentiment_by_rules = json.loads(json.dumps(self.sentiment_by_dictionary.copy()))  # Копия для 2-го дерева
+        self.change_sentiment_in_tree(self.sentiment_by_rules['tokens'], dict({'id': -1, 'children': [root]}))  # Поиск правил
 
         # print(json.dumps(self.sentiment_by_dictionary, ensure_ascii=False, indent=4))
         # print(json.dumps(self.sentiment_by_rules, ensure_ascii=False, indent=4))
-
-        self.sentence_sentiment = aboba['sentiment']
 
     def is_parent_has_main_dep(self, parent) -> bool:
         for child in parent['children']:
@@ -146,11 +140,11 @@ class SentenceDependencyTree:
         for element in self.unknown_words:
             autoit.control_send("[CLASS:Notepad]", "Edit1", element + "\n")
 
-    def search_dep(self, json_tree: list[dict], parent):
+    def change_sentiment_in_tree(self, json_tree: list[dict], parent):
         dep_array = []
         for element in json_tree:
             if element['children']:
-                element = self.search_dep(element['children'], element)
+                element = self.change_sentiment_in_tree(element['children'], element)
             if element['dependency'] in self.main_dep:
                 dep_array.append(self.calculate_sentiment_by_rules(parent, element))
                 self.found_rules.append(
@@ -159,172 +153,196 @@ class SentenceDependencyTree:
             elif (len(parent['children']) == 1) or (len(parent['children']) > 1 and element['sentiment'] != SentimentType.NEUTRAL.value) or not self.is_parent_has_main_dep(parent):
                 if element['dependency'] == 'ROOT':
                     dep_array.append(element['sentiment'])
-                elif parent['sentiment'] == element['sentiment']:
-                    dep_array.append(element['sentiment'])
-                elif parent['sentiment'] == SentimentType.NEGATIVE.value and element['sentiment'] == SentimentType.POSITIVE.value:
-                    dep_array.append(SentimentType.NEUTRAL.value)
-                elif element['sentiment'] == SentimentType.NEGATIVE.value and parent['sentiment'] == SentimentType.POSITIVE.value:
-                    dep_array.append(SentimentType.NEUTRAL.value)
-                elif parent['sentiment'] == SentimentType.POSITIVE.value and element['sentiment'] == SentimentType.NEUTRAL.value:
-                    dep_array.append(SentimentType.POSITIVE.value)
-                elif element['sentiment'] == SentimentType.POSITIVE.value and parent['sentiment'] == SentimentType.NEUTRAL.value:
-                    dep_array.append(SentimentType.POSITIVE.value)
-                elif parent['sentiment'] == SentimentType.NEGATIVE.value and element['sentiment'] == SentimentType.NEUTRAL.value:
-                    dep_array.append(SentimentType.NEGATIVE.value)
-                elif element['sentiment'] == SentimentType.NEGATIVE.value and parent['sentiment'] == SentimentType.NEUTRAL.value:
-                    dep_array.append(SentimentType.NEGATIVE.value)
+                else:
+                    dep_array.append(self.calculate_non_rules_sentiment(parent['sentiment'], element['sentiment']))
             elif len(parent['children']) > 1 and element['sentiment'] == SentimentType.NEUTRAL.value:
                 continue
 
-        parent['sentiment'] = self.calculate_node_sentiment_recoloring(dep_array)
-        print(dep_array)
+        parent['sentiment'] = self.calculate_general_word_sentiment(dep_array)
         return parent
 
-    def calculate_sentiment_by_rules(self, parent, child):
-        positive = 'PSTV'
-        negative = 'NGTV'
-        neutral = 'NEUT'
+    def calculate_non_rules_sentiment(self, parent_sentiment: str, child_sentiment: str) -> str:
+        """
+        Определяет тональность пары слов, синтаксическая зависимость которой, не подходит ни под одно правило.
+        :param parent_sentiment: тональность родительского слова.
+        :param child_sentiment: тональность слова-наследника.
+        :return: тональность пары слов.
+        """
+        if parent_sentiment == child_sentiment:
+            return parent_sentiment
+
+        if parent_sentiment == SentimentType.NEGATIVE.value and child_sentiment == SentimentType.POSITIVE.value:
+            return SentimentType.NEUTRAL.value
+
+        if child_sentiment == SentimentType.NEGATIVE.value and parent_sentiment == SentimentType.POSITIVE.value:
+            return SentimentType.NEUTRAL.value
+
+        if parent_sentiment == SentimentType.POSITIVE.value and child_sentiment == SentimentType.NEUTRAL.value:
+            return SentimentType.POSITIVE.value
+
+        if child_sentiment == SentimentType.POSITIVE.value and parent_sentiment == SentimentType.NEUTRAL.value:
+            return SentimentType.POSITIVE.value
+
+        if parent_sentiment == SentimentType.NEGATIVE.value and child_sentiment == SentimentType.NEUTRAL.value:
+            return SentimentType.NEGATIVE.value
+
+        if child_sentiment == SentimentType.NEGATIVE.value and parent_sentiment == SentimentType.NEUTRAL.value:
+            return SentimentType.NEGATIVE.value
+
+    def calculate_sentiment_by_rules(self, parent, child) -> str:
+        """
+        Определяет тональность пары слов, синтаксическая связь которой подходит под правило.
+        :param parent: родительский токен.
+        :param child: Токен-наследник.
+        :return: тональность пары слов.
+        """
         if child['dependency'] in ['nsubj', 'nsubj:pass']:  # Подлежащее - сказуемое
-            if child['sentiment'] == positive:
-                if parent['sentiment'] == positive:
-                    return positive
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return positive
-            if child['sentiment'] == negative:
-                if parent['sentiment'] == positive:
-                    return neutral
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return negative
-            if child['sentiment'] == neutral:
-                if parent['sentiment'] == positive:
-                    return positive
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return neutral
+            if child['sentiment'] == SentimentType.POSITIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.POSITIVE.value
+            if child['sentiment'] == SentimentType.NEGATIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.NEUTRAL.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEGATIVE.value
+            if child['sentiment'] == SentimentType.NEUTRAL.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEUTRAL.value
 
         if child['dependency'] in ['amod', 'det']:  # Определение - определяемое
-            if child['sentiment'] == negative:
-                if parent['sentiment'] == positive:
-                    return negative
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return negative  # было neutral
-            if child['sentiment'] == positive:
-                if parent['sentiment'] == positive:
-                    return positive
-                if parent['sentiment'] == negative:
-                    return neutral
-                if parent['sentiment'] == neutral:
-                    return positive
-            if child['sentiment'] == neutral:
-                if parent['sentiment'] == positive:
+            if child['sentiment'] == SentimentType.NEGATIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEGATIVE.value  # было neutral
+            if child['sentiment'] == SentimentType.POSITIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEUTRAL.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.POSITIVE.value
+            if child['sentiment'] == SentimentType.NEUTRAL.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
                     if parent['dependency'] in ['nsubj', 'nsubj:pass',
                                                 'ROOT']:  # Положительный, если определяется подлежащее ROOT????
-                        return positive
+                        return SentimentType.POSITIVE.value
                     elif parent['dependency'] in ['obj', 'iobj', 'nmod']:  # нейтральный, если определяется дополнение
-                        return neutral
+                        return SentimentType.NEUTRAL.value
                     else:
-                        return neutral
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return neutral
+                        return SentimentType.NEUTRAL.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEUTRAL.value
 
         if child['dependency'] in ['nmod']:  # Дополнение - дополняемый предмет
-            if child['sentiment'] == negative:
-                if parent['sentiment'] == positive:
-                    return neutral
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return negative
-            if child['sentiment'] == positive:
-                if parent['sentiment'] == positive:
-                    return positive
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return positive
-            if child['sentiment'] == neutral:
-                if parent['sentiment'] == positive:
-                    return positive
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return neutral
+            if child['sentiment'] == SentimentType.NEGATIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.NEUTRAL.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEGATIVE.value
+            if child['sentiment'] == SentimentType.POSITIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.POSITIVE.value
+            if child['sentiment'] == SentimentType.NEUTRAL.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEUTRAL.value
 
         if child['dependency'] in ['obj', 'iobj']:  # Дополнение - дополняемое действие
-            if child['sentiment'] == negative:
-                if parent['sentiment'] == positive:
-                    return negative
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return negative
-            if child['sentiment'] == positive:
-                if parent['sentiment'] == positive:
-                    return positive
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return neutral
+            if child['sentiment'] == SentimentType.NEGATIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEGATIVE.value
+            if child['sentiment'] == SentimentType.POSITIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEUTRAL.value
 
-            if child['sentiment'] == neutral:
-                if parent['sentiment'] == positive:
-                    return positive
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return neutral
+            if child['sentiment'] == SentimentType.NEUTRAL.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEUTRAL.value
 
         if child['dependency'] in ['obl', 'obl:agent', 'advmod']:  # Действие - обстоятельство advmod ???
             if child['dependency'] == 'advmod' and child['text'].lower() == 'не':
-                if parent['sentiment'] == positive:
-                    return negative
-                if parent['sentiment'] == negative:
-                    return positive
-                if parent['sentiment'] == neutral:
-                    return neutral
-            if child['sentiment'] == negative:
-                if parent['sentiment'] == positive:
-                    return negative
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return neutral
-            if child['sentiment'] == positive:
-                if parent['sentiment'] == positive:
-                    return positive
-                if parent['sentiment'] == negative:
-                    return neutral
-                if parent['sentiment'] == neutral:
-                    return positive
-            if child['sentiment'] == neutral:
-                if parent['sentiment'] == positive:
-                    return positive
-                if parent['sentiment'] == negative:
-                    return negative
-                if parent['sentiment'] == neutral:
-                    return neutral
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEUTRAL.value
+            if child['sentiment'] == SentimentType.NEGATIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEUTRAL.value
+            if child['sentiment'] == SentimentType.POSITIVE.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEUTRAL.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.POSITIVE.value
+            if child['sentiment'] == SentimentType.NEUTRAL.value:
+                if parent['sentiment'] == SentimentType.POSITIVE.value:
+                    return SentimentType.POSITIVE.value
+                if parent['sentiment'] == SentimentType.NEGATIVE.value:
+                    return SentimentType.NEGATIVE.value
+                if parent['sentiment'] == SentimentType.NEUTRAL.value:
+                    return SentimentType.NEUTRAL.value
 
-    def calculate_node_sentiment_recoloring(self, sentiments: [str]):
+    def calculate_general_word_sentiment(self, sentiments: [str]) -> str:
+        """
+        Вычисляет общую тональность слова по его результирующему списку тональностей, путем выбора одной тональности,
+        руководствуясь правилом: тональность с наибольшим количкством вхождений является результирующей.
+        :param sentiments: список тональностей, определнный для слова, по его наследниками и правилам.
+        :return: результирующая тональность слова.
+        """
         c = Counter(sentiments)
-        if len(c) == 1 and 'NEUT' in c:
-            return 'NEUT'
-        if 'NEUT' in c:
-            c.pop('NEUT', None)
+        if len(c) == 1 and SentimentType.NEUTRAL.value in c:
+            return SentimentType.NEUTRAL.value
+        if SentimentType.NEUTRAL.value in c:
+            c.pop(SentimentType.NEUTRAL.value, None)
         max_val = max(c.values())
         final_dict = {k: v for k, v in c.items() if v == max_val}
         if len(final_dict) == 1:
             return list(final_dict.keys())[0]
         else:
             if len(final_dict) == 2:
-                return 'NEUT'
+                return SentimentType.NEUTRAL.value
             else:
                 return list(final_dict.keys())[0]

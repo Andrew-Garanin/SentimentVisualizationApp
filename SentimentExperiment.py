@@ -43,26 +43,26 @@ class SentimentExperiment:
         print(self.sentence_markup_file.info())
         for index, row in self.sentence_markup_file.iterrows():
             sentence = row['Sentence'].replace('"', ' ')  # Предобработка
-            dependency_tree.generate_tree(sentence)
+            dependency_tree.build_trees(sentence)
             self.unknown_words.extend(dependency_tree.unknown_words)
             count += 1
             if count % 500 == 0:
                 print(count)
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.POSITIVE.value:
                 # Таблицы контингентности
-                if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
+                if dependency_tree.get_sentence_sentiment() == SentimentType.POSITIVE.value:
                     ws.Range("C5").Value += 1
                     ws.Range("D11").Value += 1
                     ws.Range("D16").Value += 1
                     ws.Range("B28").Value += 1  # Вторая таблица качества класификации
 
-                elif dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
+                elif dependency_tree.get_sentence_sentiment() == SentimentType.NEGATIVE.value:
                     ws.Range("C6").Value += 1
                     ws.Range("D10").Value += 1
                     ws.Range("D16").Value += 1
                     ws.Range("C28").Value += 1  # Вторая таблица качества класификации
 
-                elif dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
+                elif dependency_tree.get_sentence_sentiment() == SentimentType.NEUTRAL.value:
                     ws.Range("C6").Value += 1
                     ws.Range("D11").Value += 1
                     ws.Range("D15").Value += 1
@@ -71,20 +71,20 @@ class SentimentExperiment:
                     print(row)
 
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.NEGATIVE.value:
-                if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
+                if dependency_tree.get_sentence_sentiment() == SentimentType.POSITIVE.value:
                     ws.Range("D5").Value += 1
                     ws.Range("C11").Value += 1
                     ws.Range("D16").Value += 1
                     ws.Range("B29").Value += 1  # Вторая таблица качества класификации
                     # false_positive.append('\"'+sentence+'\"'+f", {row['Sentiment']}")
 
-                elif dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
+                elif dependency_tree.get_sentence_sentiment() == SentimentType.NEGATIVE.value:
                     ws.Range("D6").Value += 1
                     ws.Range("C10").Value += 1
                     ws.Range("D16").Value += 1
                     ws.Range("C29").Value += 1  # Вторая таблица качества класификации
 
-                elif dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
+                elif dependency_tree.get_sentence_sentiment() == SentimentType.NEUTRAL.value:
                     ws.Range("D6").Value += 1
                     ws.Range("C11").Value += 1
                     ws.Range("D15").Value += 1
@@ -93,20 +93,20 @@ class SentimentExperiment:
                     print(row)
 
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.NEUTRAL.value:
-                if dependency_tree.sentence_sentiment == SentimentType.POSITIVE.value:
+                if dependency_tree.get_sentence_sentiment() == SentimentType.POSITIVE.value:
                     ws.Range("D5").Value += 1
                     ws.Range("D11").Value += 1
                     ws.Range("C16").Value += 1
                     ws.Range("B30").Value += 1  # Вторая таблица качества класификации
                     false_positive.append('\"' + sentence + '\"' + f", {row['Sentiment']}")
 
-                elif dependency_tree.sentence_sentiment == SentimentType.NEGATIVE.value:
+                elif dependency_tree.get_sentence_sentiment() == SentimentType.NEGATIVE.value:
                     ws.Range("D6").Value += 1
                     ws.Range("D10").Value += 1
                     ws.Range("C16").Value += 1
                     ws.Range("C30").Value += 1  # Вторая таблица качества класификации
 
-                elif dependency_tree.sentence_sentiment == SentimentType.NEUTRAL.value:
+                elif dependency_tree.get_sentence_sentiment() == SentimentType.NEUTRAL.value:
                     ws.Range("D6").Value += 1
                     ws.Range("D11").Value += 1
                     ws.Range("C15").Value += 1
