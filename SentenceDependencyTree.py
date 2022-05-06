@@ -94,8 +94,8 @@ class SentenceDependencyTree:
         self.subject_predicate_dep = ['nsubj', 'nsubj:pass']  # Подлежащее - сказуемое
         self.object_action_dep = ['obj', 'iobj']  # Дополнение - дополняемое действие
         self.adverbial_modifier_action_dep = ['obl', 'obl:agent', 'advmod']  # Обстоятельство - действие
-        self.object_subject = ['nmod']  # Дополнение - дополняемый предмет
-        self.definition_defined = ['amod', 'det']  # Определение - определяемое
+        self.object_subject_dep = ['nmod']  # Дополнение - дополняемый предмет
+        self.definition_defined_dep = ['amod', 'det']  # Определение - определяемое
 
         self.sentiment_by_dictionary = None  # Дерево зависимостей с тональностью слов, определенной по словарю
         self.sentiment_by_rules = None  # Дерево зависимостей с тональностью слов, определенной по правилам
@@ -124,15 +124,16 @@ class SentenceDependencyTree:
 
         self._create_tree(root.children, self.sentiment_by_dictionary['tokens'][0]['children'])
         self.sentiment_by_rules = json.loads(json.dumps(self.sentiment_by_dictionary.copy()))  # Копия для 2-го дерева
-        self.change_sentiment_in_tree(self.sentiment_by_rules['tokens'], dict({'id': -1, 'children': [root]}))
+        self._change_sentiment_in_tree(self.sentiment_by_rules['tokens'], dict({'id': -1, 'children': [root]}))
 
-        # print(json.dumps(self.sentiment_by_dictionary, ensure_ascii=False, indent=4))
-        # print(json.dumps(self.sentiment_by_rules, ensure_ascii=False, indent=4))
+        print(json.dumps(self.sentiment_by_dictionary, ensure_ascii=False, indent=4))
+        print(json.dumps(self.sentiment_by_rules, ensure_ascii=False, indent=4))
 
     def _create_tree(self, node_children_by_lib, parents_children: []) -> None:
         """
-        Создает дерево для узла, которому принадлежат зависимые слова из node_children.
-        :param node_children_by_lib: список зависимых слов текущего слова на основании библиотеки spacy
+        Создает дерево для узла, которому принадлежат зависимые слова из node_children_by_lib.
+        :param node_children_by_lib: список зависимых слов текущего слова, полученный в рез-те обработки текста при
+        помощи библиотеки spaCy.
         :param parents_children: массив исходящих вершин родителя (параметр children в структуре)
         """
         for child in node_children_by_lib:
@@ -152,7 +153,7 @@ class SentenceDependencyTree:
                                  self.dictionary.get_word_tag(child))
                 self._create_tree(child.children, parents_children[i]['children'])
 
-    def change_sentiment_in_tree(self, parents_children: list[dict], parent):
+    def _change_sentiment_in_tree(self, parents_children: list[dict], parent):
         """
         Изменяет тональность слов в дереве зависимостей, путём рекурсивного прохождения дерева от листьев до корня.
         :param parents_children: список зависимых токенов элемента parent
@@ -162,14 +163,12 @@ class SentenceDependencyTree:
         dep_array = []
         for element in parents_children:
             if element['children']:
-                element = self.change_sentiment_in_tree(element['children'], element)
+                element = self._change_sentiment_in_tree(element['children'], element)
             if element['dependency'] in self.all_dep:
                 dep_array.append(self.calculate_sentiment_by_rules(parent, element))
                 self.found_rules.append(
                     f"{element['text']} {parent['text']} | ПРАВИЛО: {self.get_sentiment_type(element['dependency'])} | DEP: {element['dependency']} | POS: {element['pos']}")
-
-            elif (len(parent['children']) == 1) or (len(parent['children']) > 1 and element['sentiment'] != SentimentType.NEUTRAL.value) or \
-                    not self.is_parent_has_rule_dep(parent):
+            elif (len(parent['children']) == 1) or (len(parent['children']) > 1 and element['sentiment'] != SentimentType.NEUTRAL.value) or not self.is_parent_has_rule_dep(parent):
                 if element['dependency'] == 'ROOT':
                     dep_array.append(element['sentiment'])
                 else:
@@ -210,7 +209,7 @@ class SentenceDependencyTree:
                 if parent['sentiment'] == SentimentType.NEUTRAL.value:
                     return SentimentType.NEUTRAL.value
 
-        if child['dependency'] in self.definition_defined:  # Определение - определяемое
+        if child['dependency'] in self.definition_defined_dep:  # Определение - определяемое
             if child['sentiment'] == SentimentType.NEGATIVE.value:
                 if parent['sentiment'] == SentimentType.POSITIVE.value:
                     return SentimentType.NEGATIVE.value
@@ -239,7 +238,7 @@ class SentenceDependencyTree:
                 if parent['sentiment'] == SentimentType.NEUTRAL.value:
                     return SentimentType.NEUTRAL.value
 
-        if child['dependency'] in self.object_subject:  # Дополнение - дополняемый предмет
+        if child['dependency'] in self.object_subject_dep:  # Дополнение - дополняемый предмет
             if child['sentiment'] == SentimentType.NEGATIVE.value:
                 if parent['sentiment'] == SentimentType.POSITIVE.value:
                     return SentimentType.NEUTRAL.value
@@ -357,9 +356,9 @@ class SentenceDependencyTree:
             return 'Дополнение - дополняемое действие'
         if dependency in self.adverbial_modifier_action_dep:  # advmod ???
             return 'Обстоятельство - действие'
-        if dependency in self.object_subject:
+        if dependency in self.object_subject_dep:
             return 'Дополнение - дополняемый предмет'
-        if dependency in self.definition_defined:
+        if dependency in self.definition_defined_dep:
             return 'Определение - определяемое'
 
     def refresh_data(self) -> None:
