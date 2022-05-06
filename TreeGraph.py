@@ -4,21 +4,19 @@ import pathlib
 import tempfile
 import os
 import uuid
+from SentimentType import SentimentType
 
 
 class TreeGraph(Digraph):
     def __init__(self, json_tree: list[dict]):
         super().__init__()
-        self._create(json_tree, json_tree[0]['id'])
+        self._create_graph(json_tree, json_tree[0]['id'])
         self._files_to_delete = []
 
-    def _create(self, json_tree: list[dict], parent_index):
+    def _create_graph(self, json_tree: list[dict], parent_index):
         """Creates a graph."""
         for element in json_tree:
-            if element['children']:
-                self._create_node(element, parent_index)
-            else:
-                self._create_leaf(element, parent_index)
+            self._create_node(element, parent_index)
 
     def _create_node(self, element: dict, parent_index: int):
         """Creates a node of graph."""
@@ -26,21 +24,16 @@ class TreeGraph(Digraph):
         self.set_color(str(element['id']), element['sentiment'])
         if element['dependency'] != 'ROOT':
             self.edge(str(parent_index), str(element['id']), label=element['dependency'])  # стрелочка
-        self._create(element['children'], element['id'])
-
-    def _create_leaf(self, element: dict, parent_index: int):
-        """Creates a leaf of graph."""
-        self.node(str(element['id']), f"{element['text']}\\n{element['pos']}", shape='ellipse', style='filled')
-        self.edge(str(parent_index), str(element['id']), label=element['dependency'])  # стрелочка
-        self.set_color(str(element['id']), element['sentiment'])
+        if element['children']:
+            self._create_graph(element['children'], element['id'])
 
     def set_color(self, identifier: str, sentiment: str):
         """Set the node's color depends from sentiment."""
-        if identifier == '-1':  # абстрактный узел - представляет тональность всего предложения целиком
+        if identifier == '-1':  # абстрактный узел - является родителем корневого элемента
             return
-        if sentiment == 'PSTV':
+        if sentiment == SentimentType.POSITIVE.value:
             color = 'green'
-        elif sentiment == 'NGTV':
+        elif sentiment == SentimentType.NEGATIVE.value:
             color = 'red'
         else:
             color = 'gray'

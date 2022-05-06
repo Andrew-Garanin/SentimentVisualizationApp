@@ -1,6 +1,8 @@
 from PySide2.QtGui import *
 from PySide2.QtCore import *
 import spacy
+from SentimentType import SentimentType
+from bs4 import BeautifulSoup
 
 
 class SentimentHighlighter:
@@ -16,7 +18,7 @@ class SentimentHighlighter:
         brush = QBrush(Qt.darkGreen, Qt.SolidPattern)
         pstv_rule_format = QTextCharFormat()
         pstv_rule_format.setForeground(brush)
-        sentiment = 'PSTV'
+        sentiment = SentimentType.POSITIVE.value
         rule = HighlightingRule(sentiment, pstv_rule_format)
         self.highlightingRules.append(rule)
 
@@ -24,7 +26,7 @@ class SentimentHighlighter:
         brush = QBrush(Qt.red, Qt.SolidPattern)
         ngtv_rule_format = QTextCharFormat()
         ngtv_rule_format.setForeground(brush)
-        sentiment = 'NGTV'
+        sentiment = SentimentType.NEGATIVE.value
         rule = HighlightingRule(sentiment, ngtv_rule_format)
         self.highlightingRules.append(rule)
 
@@ -53,18 +55,26 @@ class SentimentHighlighter:
                         idx += 1
 
     def highlight_single_word(self, index, length, sentiment):
-        if sentiment == 'PSTV':
+        if sentiment == SentimentType.POSITIVE.value:
             rule_format = self.highlightingRules[0].rule_format
-        elif sentiment == 'NGTV':
+        elif sentiment == SentimentType.NEGATIVE.value:
             rule_format = self.highlightingRules[1].rule_format
         else:
-            rule_format = QTextCharFormat()
+            rule_format = QTextCharFormat()  # нейтральная
 
         self.cursor.beginEditBlock()
         self.cursor.setPosition(index, QTextCursor.MoveAnchor)
         self.cursor.setPosition(index + length, QTextCursor.KeepAnchor)
         self.cursor.setCharFormat(rule_format)
         self.cursor.endEditBlock()
+
+    def save_text_to_html(self):
+        cursor = QTextCursor(self.document)
+        html = cursor.document().toHtml()
+        soup = BeautifulSoup(html, features="html.parser")
+        soup.find('meta')['charset'] = 'utf-8'
+        with open('texts_data\\test.html', 'w', encoding='UTF-8') as f:
+            f.write(str(soup))
 
 
 class HighlightingRule:

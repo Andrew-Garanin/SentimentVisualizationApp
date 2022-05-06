@@ -1,10 +1,8 @@
 from ui.sentimentTextMarkupForm import sentimentTextMarkupForm
 
 from PySide2 import QtWidgets, QtCore
-from PySide2.QtCore import QPoint
 from PySide2.QtGui import QTextCursor, QCursor
 from PySide2.QtWidgets import QMenu
-from bs4 import BeautifulSoup
 
 from SentimentHighlighter import SentimentHighlighter
 
@@ -33,12 +31,7 @@ class SentimentTextMarkupForm(sentimentTextMarkupForm.Ui_sentimentTextMarkupForm
                 self.textField.setText(text)
 
     def menu_save(self):
-        cursor = QTextCursor(self.textField.document())
-        html = cursor.document().toHtml()
-        soup = BeautifulSoup(html, features="html.parser")
-        soup.find('meta')['charset'] = 'utf-8'
-        with open('texts_data\\test.html', 'w', encoding='UTF-8') as f:
-            f.write(str(soup))
+        self.highlighter.save_text_to_html()
 
     def highlight_text(self):
         self.highlighter.highlight_text()
