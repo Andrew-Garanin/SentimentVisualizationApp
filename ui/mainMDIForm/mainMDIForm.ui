@@ -95,6 +95,7 @@
      <string>Окна</string>
     </property>
     <addaction name="menuWindowsCascade"/>
+    <addaction name="menuWindowsTiled"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
@@ -137,6 +138,11 @@
   <action name="menuSentimentExperiment">
    <property name="text">
     <string>Провести эксперимент</string>
+   </property>
+  </action>
+  <action name="menuWindowsTiled">
+   <property name="text">
+    <string>Сеткой</string>
    </property>
   </action>
  </widget>

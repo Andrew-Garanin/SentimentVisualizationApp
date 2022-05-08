@@ -27,10 +27,11 @@ class SentimentExperimentForm(sentimentExperimentForm.Ui_sentimentExperimentForm
         """
         file_path, ext = QtWidgets.QFileDialog.getOpenFileName(self, 'Select file', filter='*.csv')
         if file_path:
-            with open(file_path, 'r', encoding='UTF-8') as file:
-                self.sentence_markup_file = pd.read_csv(file, quotechar='\"', sep=',')
+            self.filePathLineEdit.setText(file_path)
 
     def make_experiment(self):
+        with open(self.filePathLineEdit.text(), 'r', encoding='UTF-8') as file:
+            self.sentence_markup_file = pd.read_csv(file, quotechar='\"', sep=',')
         self._initialize_progress_bar(len(self.sentence_markup_file))
         experiment = SentimentExperiment(self.dictionary, self.sentence_markup_file, self.progress_bar)
         experiment.make_experiment()

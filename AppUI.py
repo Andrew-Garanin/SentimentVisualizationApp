@@ -33,6 +33,7 @@ class SentimentVisualizationApp(mainMDIForm.Ui_mainMDIForm, QtWidgets.QMainWindo
         self.menuSingleSentence.triggered.connect(self.menu_single_sentence_sentiment_tree)
         self.menuSentimentExperiment.triggered.connect(self.menu_sentiment_experiment)
         self.menuWindowsCascade.triggered.connect(self.menu_windows_cascade)
+        self.menuWindowsTiled.triggered.connect(self.menu_windows_tile)
 
     # -----------------------------Методы меню-----------------------------
     def menu_sentiment_text_markup(self):

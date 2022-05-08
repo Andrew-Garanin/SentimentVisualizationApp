@@ -126,8 +126,8 @@ class SentenceDependencyTree:
         self.sentiment_by_rules = json.loads(json.dumps(self.sentiment_by_dictionary.copy()))  # Копия для 2-го дерева
         self._change_sentiment_in_tree(self.sentiment_by_rules['tokens'], dict({'id': -1, 'children': [root]}))
 
-        print(json.dumps(self.sentiment_by_dictionary, ensure_ascii=False, indent=4))
-        print(json.dumps(self.sentiment_by_rules, ensure_ascii=False, indent=4))
+        # print(json.dumps(self.sentiment_by_dictionary, ensure_ascii=False, indent=4))
+        # print(json.dumps(self.sentiment_by_rules, ensure_ascii=False, indent=4))
 
     def _create_tree(self, node_children_by_lib, parents_children: []) -> None:
         """
