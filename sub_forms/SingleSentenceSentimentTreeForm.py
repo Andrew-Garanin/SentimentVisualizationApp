@@ -50,5 +50,3 @@ class SingleSentenceSentimentTreeForm(singleSentenceSentimentTreeForm.Ui_singleS
         self.graphicsViewSecondTree.setScene(None)
         self.foundRulesListWidget.clear()
 
-    # def closeEvent(self, event):
-    #     self.dictionary.clear_unknown_words()

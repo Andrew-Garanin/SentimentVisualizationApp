@@ -37,40 +37,32 @@ class SentimentVisualizationApp(mainMDIForm.Ui_mainMDIForm, QtWidgets.QMainWindo
 
     # -----------------------------Методы меню-----------------------------
     def menu_sentiment_text_markup(self):
-        if not self.sentiment_text_markup_form:
-            self.sentiment_text_markup_form = SentimentTextMarkupForm(self.dictionary)
-            self.mdi.addSubWindow(self.sentiment_text_markup_form)
-            self.sentiment_text_markup_form.show()
-        self.sentiment_text_markup_form.setFocus()
+        self.sentiment_text_markup_form = SentimentTextMarkupForm(self.dictionary)
+        self.mdi.addSubWindow(self.sentiment_text_markup_form)
+        self.sentiment_text_markup_form.show()
 
     def menu_add_new_word(self):
-        if not self.add_new_word_form:
-            self.add_new_word_form = AddNewWordForm(self.dictionary)
-            self.add_new_word_form.labelError.clear()
-            self.add_new_word_form.newWordEdit.clear()
-            self.add_new_word_form.newWordEdit.setFocus()
-            self.add_new_word_form.radioButtonPSTV.setChecked(True)
-            self.mdi.addSubWindow(self.add_new_word_form)
-            self.add_new_word_form.show()
-        self.add_new_word_form.setFocus()
+        self.add_new_word_form = AddNewWordForm(self.dictionary)
+        self.add_new_word_form.labelError.clear()
+        self.add_new_word_form.newWordEdit.clear()
+        self.add_new_word_form.newWordEdit.setFocus()
+        self.add_new_word_form.radioButtonPSTV.setChecked(True)
+        self.mdi.addSubWindow(self.add_new_word_form)
+        self.add_new_word_form.show()
 
     def menu_change_word_sentiment(self):
-        if not self.change_word_sentiment_form:
-            self.change_word_sentiment_form = ChangeWordSentimentForm(self.dictionary)
-            self.change_word_sentiment_form.labelError.clear()
-            self.change_word_sentiment_form.wordEdit.clear()
-            self.change_word_sentiment_form.wordEdit.setFocus()
-            self.change_word_sentiment_form.radioButtonPSTV.setChecked(True)
-            self.mdi.addSubWindow(self.change_word_sentiment_form)
-            self.change_word_sentiment_form.show()
-        self.change_word_sentiment_form.setFocus()
+        self.change_word_sentiment_form = ChangeWordSentimentForm(self.dictionary)
+        self.change_word_sentiment_form.labelError.clear()
+        self.change_word_sentiment_form.wordEdit.clear()
+        self.change_word_sentiment_form.wordEdit.setFocus()
+        self.change_word_sentiment_form.radioButtonPSTV.setChecked(True)
+        self.mdi.addSubWindow(self.change_word_sentiment_form)
+        self.change_word_sentiment_form.show()
 
     def menu_single_sentence_sentiment_tree(self):
-        if not self.single_sentence_sentiment_tree_form:
-            self.single_sentence_sentiment_tree_form = SingleSentenceSentimentTreeForm(self.dictionary)
-            self.mdi.addSubWindow(self.single_sentence_sentiment_tree_form)
-            self.single_sentence_sentiment_tree_form.show()
-        self.single_sentence_sentiment_tree_form.setFocus()
+        self.single_sentence_sentiment_tree_form = SingleSentenceSentimentTreeForm(self.dictionary)
+        self.mdi.addSubWindow(self.single_sentence_sentiment_tree_form)
+        self.single_sentence_sentiment_tree_form.show()
 
     def menu_sentiment_experiment(self):
         if not self.sentiment_experiment_form:
@@ -80,14 +72,18 @@ class SentimentVisualizationApp(mainMDIForm.Ui_mainMDIForm, QtWidgets.QMainWindo
         self.sentiment_experiment_form.setFocus()
 
     def menu_windows_cascade(self):
-        self.mdi.cascadeSubWindows()  # Arranges subwindows in MDiArea in a cascaded fashion
+        self.mdi.cascadeSubWindows()
 
     def menu_windows_tile(self):
-        self.mdi.tileSubWindows()  # Arranges subwindows in MDiArea in a tiled fashion
+        self.mdi.tileSubWindows()
 
 
-if __name__ == '__main__':
+def main():
     app = QtWidgets.QApplication()
     qt_app = SentimentVisualizationApp()
     qt_app.show()
     app.exec_()
+
+
+if __name__ == '__main__':
+    main()

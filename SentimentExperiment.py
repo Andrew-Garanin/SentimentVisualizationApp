@@ -70,11 +70,10 @@ class SentimentExperiment:
         false_positive = []
         xl = Dispatch("Excel.Application")
         xl.Visible = True
-        wb = xl.Workbooks.Open(
+        wb = xl.Workbooks.Open( # Исправить
             r'D:\\Projects\\PycharmProjects\\SentimentTextMarkup\\templates\\Шаблон_эксперимент_статистика.xltx')
         ws = wb.Worksheets("Лист1")
 
-        print(self.sentence_markup_file.info())
         for index, row in self.sentence_markup_file.iterrows():
             sentence = row['Sentence'].replace('"', ' ')  # Удаление лишних кавычек внутри предложения
             dependency_tree.build_trees(sentence)
@@ -98,8 +97,6 @@ class SentimentExperiment:
                     ws.Range("D11").Value += 1
                     ws.Range("D15").Value += 1
                     ws.Range("D28").Value += 1  # Вторая таблица качества класификации
-                else:
-                    print(row)
 
             if convert_sentiment_tag(row['Sentiment']) == SentimentType.NEGATIVE.value:
                 if dependency_tree.get_sentence_sentiment() == SentimentType.POSITIVE.value:
@@ -107,7 +104,6 @@ class SentimentExperiment:
                     ws.Range("C11").Value += 1
                     ws.Range("D16").Value += 1
                     ws.Range("B29").Value += 1  # Вторая таблица качества класификации
-                    # false_positive.append('\"'+sentence+'\"'+f", {row['Sentiment']}")
 
                 elif dependency_tree.get_sentence_sentiment() == SentimentType.NEGATIVE.value:
                     ws.Range("D6").Value += 1
@@ -127,7 +123,6 @@ class SentimentExperiment:
                     ws.Range("D11").Value += 1
                     ws.Range("C16").Value += 1
                     ws.Range("B30").Value += 1  # Вторая таблица качества класификации
-                    # false_positive.append('\"' + sentence + '\"' + f", {row['Sentiment']}")
 
                 elif dependency_tree.get_sentence_sentiment() == SentimentType.NEGATIVE.value:
                     ws.Range("D6").Value += 1
@@ -145,10 +140,6 @@ class SentimentExperiment:
         self.progress_bar.setVisible(False)
         fill_classification_quality_tables(ws)
         self.save_unknown_words()
-
-        # with open('false_neutral.txt', 'w', encoding='utf-8') as file:
-        #     for row in false_positive:
-        #         file.write(row+'\n')
 
     def save_unknown_words(self) -> None:
         """
